@@ -739,6 +739,28 @@ html{scroll-behavior:smooth;}
 .anchor-section{scroll-margin-top:76px; position:relative;}
 .section-divider{height:1px; background:var(--border); margin:0 auto; max-width:var(--maxw);}
 
+/* ---------- aviso de navegador interno (Instagram/Facebook) ---------- */
+.inapp-banner{
+  position: sticky; top: 0; z-index: 9999;
+  background: linear-gradient(90deg, var(--accent), #ff8a5c);
+  color: #1a0f0a;
+}
+.inapp-banner-inner{
+  max-width: 1160px; margin: 0 auto;
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 16px; font-size: 13.5px; line-height: 1.4;
+}
+.inapp-banner-icon{ flex: none; font-size: 16px; }
+.inapp-banner-text{ flex: 1; }
+.inapp-banner-text strong{ font-weight: 800; }
+#inapp-banner-close{
+  flex: none; background: rgba(0,0,0,.12); border: none; color: inherit;
+  width: 26px; height: 26px; border-radius: 50%; font-size: 18px; line-height: 1;
+  cursor: pointer;
+}
+@media (max-width: 640px){
+  .inapp-banner-inner{ padding: 8px 12px; font-size: 12.5px; }
+}
 </style>
 <script src="https://sdk.mercadopago.com/js/v2"></script>
 <script type="application/ld+json">
@@ -841,6 +863,30 @@ html{scroll-behavior:smooth;}
 </script>
 </head>
 <body data-theme="home">
+<div id="inapp-browser-banner" class="inapp-banner" style="display:none;">
+  <div class="inapp-banner-inner">
+    <span class="inapp-banner-icon">⚠️</span>
+    <span class="inapp-banner-text">Pra fazer o pagamento, toque nos <strong>⋯</strong> (ou no ícone de compartilhar) no topo da tela e escolha <strong>"Abrir no navegador"</strong>. O pagamento não funciona dentro do app.</span>
+    <button type="button" id="inapp-banner-close" aria-label="fechar aviso">×</button>
+  </div>
+</div>
+<script>
+  (function () {
+    var ua = navigator.userAgent || "";
+    var isInApp = /Instagram|FBAN|FBAV|FB_IAB|Line\/|MicroMessenger|TikTok/i.test(ua);
+    window.__isInAppBrowser = isInApp;
+    if (isInApp) {
+      var banner = document.getElementById("inapp-browser-banner");
+      var closeBtn = document.getElementById("inapp-banner-close");
+      if (banner) banner.style.display = "block";
+      if (closeBtn) closeBtn.addEventListener("click", function () {
+        banner.style.display = "none";
+      });
+      var coWarn = document.getElementById("co-inapp-warning");
+      if (coWarn) coWarn.style.display = "block";
+    }
+  })();
+</script>
 <div class="ambient-bg">
   <span class="orb orb-a"></span>
   <span class="orb orb-b"></span>
@@ -1820,6 +1866,7 @@ html{scroll-behavior:smooth;}
       <div class="summary-row"><span id="co-sum-plan">pacote —</span><span id="co-sum-price">R$ 0</span></div>
       <div class="summary-row total"><span>total</span><span id="co-sum-total">R$ 0</span></div>
       <div style="font-weight:600; margin:16px 0 10px;">forma de pagamento</div>
+      <div id="co-inapp-warning" class="form-error" style="display:none; background:var(--accent); color:#1a0f0a; font-size:12.5px; font-weight:600; padding:10px 12px; border-radius:8px; margin:12px 0;">⚠️ Você está no navegador do Instagram/Facebook. Toque nos ⋯ no topo e escolha "Abrir no navegador" antes de pagar.</div>
       <div id="co-mp-error" class="form-error" style="display:none; color:var(--accent); font-size:12px; margin:12px 0;"></div>
       <div id="paymentBrick_container" style="margin-top:6px;"></div>
       <div id="statusScreenBrick_container" style="margin-top:16px; display:none;"></div>
