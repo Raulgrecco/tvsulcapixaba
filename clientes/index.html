@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clientes — TV Sul Capixaba</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root{
+    --bg: #0b0d10;
+    --panel: #14171b;
+    --panel-2: #1b1f24;
+    --line: #262b31;
+    --text: #eef0f2;
+    --text-soft: #9aa2ab;
+    --accent: #E8543E;
+    --accent-soft: rgba(232,84,62,.14);
+    --ok: #35c67a;
+    --warn: #e8b13e;
+    --bad: #e85a5a;
+    --radius: 12px;
+    --ff: 'Inter', -apple-system, system-ui, sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--ff);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  button{font-family:inherit;cursor:pointer}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  /* ---------- login ---------- */
+  #login-screen{
+    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 30% 20%, rgba(232,84,62,.10), transparent 55%), var(--bg);
+    z-index:50;
+  }
+  .login-box{width:100%;max-width:340px;padding:32px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius)}
+  .login-box h1{font-size:18px;margin:0 0 4px;font-weight:700}
+  .login-box p{margin:0 0 20px;color:var(--text-soft);font-size:13px}
+  .login-box input{
+    width:100%;padding:11px 12px;background:var(--panel-2);border:1px solid var(--line);
+    border-radius:8px;color:var(--text);font-size:14px;margin-bottom:12px;
+  }
+  .login-box button{
+    width:100%;padding:11px;background:var(--accent);border:none;border-radius:8px;
+    color:#fff;font-weight:700;font-size:14px;
+  }
+  .login-box button:hover{background:#d1462f}
+  #login-error{color:var(--bad);font-size:12.5px;margin-top:10px;display:none;line-height:1.4}
+
+  /* ---------- shell ---------- */
+  #app{display:none;min-height:100vh}
+  header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 24px;border-bottom:1px solid var(--line);
+  }
+  header h1{font-size:15px;margin:0;font-weight:700}
+  header .status{font-size:12px;color:var(--text-soft);display:flex;align-items:center;gap:6px}
+  .pulse{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+  #logout-btn{background:none;border:1px solid var(--line);color:var(--text-soft);border-radius:8px;padding:7px 12px;font-size:12.5px}
+  #logout-btn:hover{color:var(--text);border-color:#3a4048}
+
+  main{padding:24px;max-width:1240px;margin:0 auto}
+
+  /* ---------- cards ---------- */
+  .cards{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:24px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+  .card .n{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}
+  .card .l{font-size:11.5px;color:var(--text-soft);margin-top:4px}
+  @media (max-width:1000px){.cards{grid-template-columns:repeat(3,1fr)}}
+  @media (max-width:600px){.cards{grid-template-columns:repeat(2,1fr)}}
+
+  /* ---------- table ---------- */
+  .table-wrap{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;padding:12px 14px;color:var(--text-soft);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;border-bottom:1px solid var(--line)}
+  td{padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+  tbody tr{cursor:pointer}
+  tbody tr:hover{background:var(--panel-2)}
+  tbody tr:last-child td{border-bottom:none}
+  .status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+  .st-iniciado .status-dot{background:var(--warn)}
+  .st-pix .status-dot{background:var(--warn)}
+  .st-aprovado .status-dot{background:var(--ok)}
+  .st-pendente .status-dot{background:var(--warn)}
+  .st-expirado .status-dot,.st-cancelado .status-dot{background:var(--bad)}
+
+  #empty-state, #load-error{padding:48px 24px;text-align:center;color:var(--text-soft);font-size:13.5px;line-height:1.6}
+  #load-error{color:var(--bad)}
+  #load-error code{background:var(--panel-2);padding:2px 6px;border-radius:4px;font-size:12px}
+
+  /* ---------- drawer ---------- */
+  #drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:40}
+  #drawer{
+    position:fixed;top:0;right:0;height:100vh;width:min(420px,100%);
+    background:var(--panel);border-left:1px solid var(--line);
+    transform:translateX(100%);transition:transform .25s ease;z-index:41;
+    overflow-y:auto;padding:24px;
+  }
+  #drawer.open{transform:translateX(0)}
+  #drawer-overlay.open{display:block}
+  #drawer h2{font-size:17px;margin:0 0 2px}
+  #drawer .sub{color:var(--text-soft);font-size:12.5px;margin-bottom:20px}
+  #drawer-close{position:absolute;top:20px;right:20px;background:none;border:none;color:var(--text-soft);font-size:20px}
+  .field{margin-bottom:14px}
+  .field .k{font-size:11px;color:var(--text-soft);text-transform:uppercase;letter-spacing:.03em;margin-bottom:3px}
+  .field .v{font-size:14px}
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:18px 0}
+  .actions button{padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--panel-2);color:var(--text);font-size:12.5px;text-align:left}
+  .actions button:hover{border-color:var(--accent)}
+  .checklist{margin-top:18px;border-top:1px solid var(--line);padding-top:16px}
+  .checklist .k{font-size:11px;color:var(--text-soft);text-transform:uppercase;letter-spacing:.03em;margin-bottom:10px}
+  .checklist label{display:flex;align-items:center;gap:9px;font-size:13.5px;padding:6px 0;cursor:pointer}
+  .checklist input{width:16px;height:16px;accent-color:var(--accent)}
+</style>
+</head>
+<body>
+
+<!-- ===== TELA DE LOGIN ===== -->
+<div id="login-screen">
+  <div class="login-box">
+    <h1>Painel de clientes</h1>
+    <p>Área restrita — TV Sul Capixaba</p>
+    <input type="password" id="login-key" placeholder="Chave de acesso" autocomplete="off">
+    <button id="login-submit">Entrar</button>
+    <div id="login-error"></div>
+  </div>
+</div>
+
+<!-- ===== PAINEL ===== -->
+<div id="app">
+  <header>
+    <h1>Clientes — TV Sul Capixaba</h1>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span class="status"><span class="pulse"></span> atualizado automaticamente</span>
+      <button id="logout-btn">Sair</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="cards" id="cards">
+      <div class="card"><div class="n" id="c-novos">—</div><div class="l">novos cadastros</div></div>
+      <div class="card"><div class="n" id="c-aprovados">—</div><div class="l">pagamentos aprovados</div></div>
+      <div class="card"><div class="n" id="c-pendentes">—</div><div class="l">pix pendentes</div></div>
+      <div class="card"><div class="n" id="c-expirados">—</div><div class="l">pagamentos expirados</div></div>
+      <div class="card"><div class="n" id="c-receita-dia">—</div><div class="l">receita do dia</div></div>
+      <div class="card"><div class="n" id="c-receita-mes">—</div><div class="l">receita do mês</div></div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th><th>Empresa</th><th>Cidade</th><th>Plano</th>
+            <th>Valor</th><th>Status</th><th>Data</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div id="empty-state" style="display:none">Nenhum cadastro ainda. Quando alguém iniciar o checkout no site, aparece aqui automaticamente.</div>
+      <div id="load-error" style="display:none"></div>
+    </div>
+  </main>
+</div>
+
+<!-- ===== DETALHE DO CLIENTE ===== -->
+<div id="drawer-overlay"></div>
+<div id="drawer">
+  <button id="drawer-close" aria-label="fechar">×</button>
+  <h2 id="d-nome">—</h2>
+  <div class="sub" id="d-empresa">—</div>
+
+  <div class="field"><div class="k">Cidade</div><div class="v" id="d-cidade">—</div></div>
+  <div class="field"><div class="k">Plano</div><div class="v" id="d-plano">—</div></div>
+  <div class="field"><div class="k">Valor</div><div class="v" id="d-valor">—</div></div>
+  <div class="field"><div class="k">Status</div><div class="v" id="d-status">—</div></div>
+  <div class="field"><div class="k">Data</div><div class="v" id="d-data">—</div></div>
+  <div class="field"><div class="k">Código do pedido</div><div class="v" id="d-codigo">—</div></div>
+
+  <div class="actions">
+    <button id="d-whatsapp">Abrir WhatsApp</button>
+    <button id="d-instagram">Abrir Instagram</button>
+    <button id="d-copy-tel">Copiar telefone</button>
+    <button id="d-copy-email">Copiar e-mail</button>
+    <button id="d-copy-codigo" style="grid-column:1 / -1">Copiar código do pedido</button>
+  </div>
+
+  <div class="checklist">
+    <div class="k">Acompanhamento</div>
+    <label><input type="checkbox" data-check="pagou"> Pagou</label>
+    <label><input type="checkbox" data-check="grupo"> Entrou no grupo</label>
+    <label><input type="checkbox" data-check="boasvindas"> Recebeu boas-vindas</label>
+    <label><input type="checkbox" data-check="material"> Enviou material</label>
+    <label><input type="checkbox" data-check="video"> Primeiro vídeo publicado</label>
+    <label><input type="checkbox" data-check="story"> Story publicado</label>
+    <label><input type="checkbox" data-check="renovacao"> Renovação enviada</label>
+  </div>
+</div>
+
+<script>
+  // ===================================================================
+  // CONFIGURAÇÃO — únicos pontos que dependem do backend.
+  // Nenhuma rota/arquivo existente do site é usada ou alterada aqui.
+  // ===================================================================
+  const CFG = {
+    apiBase: "https://agenciaclap-site.onrender.com",
+    loginEndpoint: "/api/admin/login",       // <- ainda não existe no backend
+    clientesEndpoint: "/api/admin/clientes", // <- ainda não existe no backend
+    checklistEndpoint: "/api/admin/clientes/:id/checklist", // <- idem
+    pollMs: 15000
+  };
+
+  const $ = (id) => document.getElementById(id);
+  let token = sessionStorage.getItem("clientesToken") || null;
+  let currentClient = null;
+  let pollTimer = null;
+
+  const money = (v) => (v == null ? "—" : "R$ " + Number(v).toFixed(2).replace(".", ","));
+  const statusClass = (s) => ({
+    "cadastro_iniciado": "st-iniciado",
+    "pix_gerado": "st-pix",
+    "pagamento_aprovado": "st-aprovado",
+    "pagamento_pendente": "st-pendente",
+    "pagamento_expirado": "st-expirado",
+    "pagamento_cancelado": "st-cancelado"
+  }[s] || "st-iniciado");
+  const statusLabel = (s) => ({
+    "cadastro_iniciado": "Cadastro iniciado",
+    "pix_gerado": "Pix gerado",
+    "pagamento_aprovado": "Pagamento aprovado",
+    "pagamento_pendente": "Pagamento pendente",
+    "pagamento_expirado": "Pagamento expirado",
+    "pagamento_cancelado": "Pagamento cancelado"
+  }[s] || s || "—");
+
+  // ---------- login ----------
+  $("login-submit").addEventListener("click", async () => {
+    const key = $("login-key").value.trim();
+    const errBox = $("login-error");
+    errBox.style.display = "none";
+    if (!key) return;
+    try {
+      const res = await fetch(CFG.apiBase + CFG.loginEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key })
+      });
+      if (!res.ok) throw new Error("Chave inválida ou endpoint de login ainda não configurado no servidor.");
+      const body = await res.json();
+      token = body.token || key;
+      sessionStorage.setItem("clientesToken", token);
+      showApp();
+    } catch (err) {
+      errBox.textContent = err.message || "Não foi possível entrar.";
+      errBox.style.display = "block";
+    }
+  });
+  $("login-key").addEventListener("keydown", (e) => { if (e.key === "Enter") $("login-submit").click(); });
+
+  $("logout-btn").addEventListener("click", () => {
+    sessionStorage.removeItem("clientesToken");
+    token = null;
+    clearInterval(pollTimer);
+    $("app").style.display = "none";
+    $("login-screen").style.display = "flex";
+  });
+
+  function showApp() {
+    $("login-screen").style.display = "none";
+    $("app").style.display = "block";
+    loadClientes();
+    pollTimer = setInterval(loadClientes, CFG.pollMs);
+  }
+
+  // ---------- dados ----------
+  async function loadClientes() {
+    const rowsEl = $("rows"), emptyEl = $("empty-state"), errEl = $("load-error");
+    errEl.style.display = "none";
+    try {
+      const res = await fetch(CFG.apiBase + CFG.clientesEndpoint, {
+        headers: { Authorization: "Bearer " + token }
+      });
+      if (!res.ok) throw new Error("http_" + res.status);
+      const data = await res.json();
+      renderCards(data.resumo || {});
+      renderRows(data.clientes || []);
+    } catch (err) {
+      rowsEl.innerHTML = "";
+      emptyEl.style.display = "none";
+      errEl.style.display = "block";
+      errEl.innerHTML = "Não foi possível carregar os dados. O endpoint <code>" + CFG.clientesEndpoint +
+        "</code> ainda precisa ser criado no backend, ou a chave de acesso expirou.";
+    }
+  }
+
+  function renderCards(r) {
+    $("c-novos").textContent = r.novos ?? "—";
+    $("c-aprovados").textContent = r.aprovados ?? "—";
+    $("c-pendentes").textContent = r.pendentes ?? "—";
+    $("c-expirados").textContent = r.expirados ?? "—";
+    $("c-receita-dia").textContent = r.receitaDia != null ? money(r.receitaDia) : "—";
+    $("c-receita-mes").textContent = r.receitaMes != null ? money(r.receitaMes) : "—";
+  }
+
+  function renderRows(clientes) {
+    const rowsEl = $("rows"), emptyEl = $("empty-state");
+    rowsEl.innerHTML = "";
+    if (!clientes.length) { emptyEl.style.display = "block"; return; }
+    emptyEl.style.display = "none";
+    clientes.forEach((c) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${c.nome || "—"}</td>
+        <td>${c.empresa || "—"}</td>
+        <td>${c.cidade || "—"}</td>
+        <td>${c.plano || "—"}</td>
+        <td>${money(c.valor)}</td>
+        <td class="${statusClass(c.status)}"><span class="status-dot"></span>${statusLabel(c.status)}</td>
+        <td>${c.data ? new Date(c.data).toLocaleDateString("pt-BR") : "—"}</td>
+      `;
+      tr.addEventListener("click", () => openDrawer(c));
+      rowsEl.appendChild(tr);
+    });
+  }
+
+  // ---------- drawer de detalhe ----------
+  function openDrawer(c) {
+    currentClient = c;
+    $("d-nome").textContent = c.nome || "—";
+    $("d-empresa").textContent = c.empresa || "—";
+    $("d-cidade").textContent = c.cidade || "—";
+    $("d-plano").textContent = c.plano || "—";
+    $("d-valor").textContent = money(c.valor);
+    $("d-status").textContent = statusLabel(c.status);
+    $("d-data").textContent = c.data ? new Date(c.data).toLocaleString("pt-BR") : "—";
+    $("d-codigo").textContent = c.codigoPedido || "—";
+
+    $("d-whatsapp").onclick = () => c.whatsapp && window.open("https://wa.me/" + c.whatsapp.replace(/\D/g, ""), "_blank");
+    $("d-instagram").onclick = () => c.instagram && window.open("https://instagram.com/" + c.instagram.replace("@", ""), "_blank");
+    $("d-copy-tel").onclick = () => navigator.clipboard.writeText(c.whatsapp || "");
+    $("d-copy-email").onclick = () => navigator.clipboard.writeText(c.email || "");
+    $("d-copy-codigo").onclick = () => navigator.clipboard.writeText(c.codigoPedido || "");
+
+    document.querySelectorAll('[data-check]').forEach((box) => {
+      const key = box.dataset.check;
+      box.checked = !!(c.checklist && c.checklist[key]);
+      box.onchange = () => updateChecklist(c.id, key, box.checked);
+    });
+
+    $("drawer").classList.add("open");
+    $("drawer-overlay").classList.add("open");
+  }
+  $("drawer-close").addEventListener("click", closeDrawer);
+  $("drawer-overlay").addEventListener("click", closeDrawer);
+  function closeDrawer() {
+    $("drawer").classList.remove("open");
+    $("drawer-overlay").classList.remove("open");
+  }
+
+  async function updateChecklist(id, key, value) {
+    try {
+      await fetch(CFG.apiBase + CFG.checklistEndpoint.replace(":id", id), {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
+        body: JSON.stringify({ [key]: value })
+      });
+    } catch (err) {
+      console.error("[clientes] falha ao salvar checklist:", err);
+    }
+  }
+
+  // ---------- boot ----------
+  if (token) showApp();
+</script>
+</body>
+</html>
