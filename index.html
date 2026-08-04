@@ -1617,10 +1617,10 @@ function closeFilmeDetail(){
 }
 
 function openFilmeWatch(youtubeId, titulo, selo, ano, duracao){
-  var wasLive=!!document.getElementById('live-player');
-  destroyCurrentPlayer();
+  var oldLive=document.getElementById('live-player');
+  if(oldLive && oldLive.parentNode) oldLive.parentNode.removeChild(oldLive);
   var wrapper=document.getElementById('player-wrapper');
-  if(wrapper){ wrapper.style.visibility='hidden'; wrapper._wasLive=wasLive; }
+  if(wrapper){ wrapper.style.visibility='hidden'; }
   document.getElementById('filme-watch-iframe').src='https://www.youtube.com/embed/'+youtubeId+'?autoplay=1';
   document.getElementById('filme-watch-title').textContent=titulo;
   document.getElementById('filme-watch-breadcrumb').textContent='FILME'+(ano?' · '+ano:'')+(duracao?' · '+duracao:'')+(selo?' · '+selo:'');
@@ -1631,6 +1631,8 @@ function closeFilmeWatch(){
   document.getElementById('filme-watch-iframe').src='';
   document.getElementById('filme-watch').style.display='none';
   document.body.style.overflow='';
+  var wrapper=document.getElementById('player-wrapper');
+  if(wrapper){ wrapper.style.visibility=''; }
 }
 
 function openRedeVideo(src, titulo, credito){
