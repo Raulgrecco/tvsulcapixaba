@@ -952,6 +952,720 @@ html{scroll-behavior:smooth;}
       </div>
       </div>
   </section>
+
+<!-- ═══════════════ ASSISTA NA REDE TV SUL CAPIXABA ═══════════════ -->
+<style>
+.rede-media-section{padding:56px 0 40px;background:var(--bg);}
+.rede-media-section .container{max-width:var(--maxw);margin:0 auto;padding:0 20px;}
+.rede-media-head{text-align:center;margin-bottom:32px;}
+.rede-media-eyebrow{font-size:12px;font-weight:800;color:var(--accent);letter-spacing:3px;text-transform:uppercase;}
+.rede-media-title{font-size:26px;font-weight:900;color:var(--text);margin:6px 0 8px;}
+.rede-media-sub{font-size:14px;color:var(--text-secondary);max-width:620px;margin:0 auto;line-height:1.6;}
+.rede-sub-block{margin:36px 0;}
+.rede-sub-title{font-size:16px;font-weight:800;color:var(--text);margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.rede-sub-badge{font-size:10px;font-weight:700;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent);padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;}
+.rede-row-wrap{position:relative;margin-top:12px;}
+.rede-row{display:flex;gap:12px;overflow-x:auto;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none;padding-bottom:4px;}
+.rede-row::-webkit-scrollbar{display:none;}
+.rede-card{flex:0 0 220px;border-radius:10px;overflow:hidden;cursor:pointer;position:relative;transition:transform .2s,box-shadow .2s;border:1px solid var(--border);background:#000;}
+.rede-card:hover{transform:scale(1.05);box-shadow:0 10px 26px rgba(0,0,0,.6);}
+.rede-thumb{position:relative;aspect-ratio:16/9;overflow:hidden;}
+.rede-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.rede-thumb::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,.88) 100%);}
+.rede-overlay{position:absolute;bottom:0;left:0;right:0;padding:8px 10px 10px;z-index:2;}
+.rede-title{font-size:12px;font-weight:800;color:#fff;line-height:1.3;margin-bottom:6px;text-shadow:0 1px 4px rgba(0,0,0,.8);}
+.rede-btn{display:inline-block;background:var(--accent);color:#fff;padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;}
+.rede-btn:hover{background:var(--accent-hover);}
+.rede-arrow{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:56px;background:rgba(0,0,0,.75);border:none;border-radius:4px;color:#fff;font-size:20px;cursor:pointer;z-index:10;display:flex;align-items:center;justify-content:center;opacity:.55;transition:opacity .15s;}
+.rede-row-wrap:hover .rede-arrow{opacity:1;}
+.rede-arrow.prev{left:-8px;}
+.rede-arrow.next{right:-8px;}
+#rede-grandes-filmes{position:relative;padding:22px 0 8px;background:radial-gradient(ellipse 70% 100% at 50% 0%, #1a0f0c 0%, rgba(0,0,0,0) 75%);}
+#rede-grandes-filmes .rede-card{flex:0 0 253px;}
+#rede-grandes-filmes .rede-card:hover{transform:scale(1.08);box-shadow:0 12px 32px rgba(0,0,0,.85);}
+#rede-grandes-filmes .rede-btn:hover{background:#E8543E;color:#fff;opacity:1;}
+#rede-grandes-filmes .rede-ribbon{position:absolute;top:9px;left:9px;z-index:3;background:rgba(0,0,0,.78);border:1px solid #E8543E;color:#E8543E;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:20px;}
+#rede-grandes-filmes .rede-credit{display:block;font-size:10px;color:#E8543E;font-weight:700;letter-spacing:.3px;margin-bottom:2px;}
+#rede-grandes-filmes .rede-imdb{display:block;font-size:9.5px;color:rgba(255,255,255,.55);margin-bottom:5px;}
+@media(max-width:600px){.rede-card{flex:0 0 160px;}.rede-arrow{display:none;}}
+</style>
+
+<!-- MODAL DE DETALHES — GRANDES FILMES -->
+<div id="filme-detail" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.88);align-items:center;justify-content:center;padding:20px;">
+  <div style="position:relative;background:#111;max-width:920px;width:100%;max-height:88vh;overflow-y:auto;border-radius:10px;display:grid;grid-template-columns:1fr 1.3fr;">
+    <button onclick="closeFilmeDetail()" style="position:absolute;top:12px;right:16px;background:none;border:none;color:#fff;font-size:26px;cursor:pointer;z-index:2;">✕</button>
+    <div id="fd-poster" style="background-size:cover;background-position:center;min-height:320px;"></div>
+    <div style="padding:28px;">
+      <span id="fd-selo" style="display:inline-block;background:#e63b1e;color:#fff;font-size:11px;font-weight:800;padding:3px 10px;border-radius:4px;margin-right:8px;"></span>
+      <span id="fd-classificacao" style="display:inline-block;background:#2a2d36;color:#c9c9c9;font-size:11px;padding:3px 10px;border-radius:4px;"></span>
+      <h2 id="fd-titulo" style="color:#fff;font-size:24px;font-weight:900;margin:14px 0 10px;"></h2>
+      <p id="fd-sinopse" style="color:#c9c9c9;font-size:14px;line-height:1.6;margin-bottom:16px;"></p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px;color:#fff;margin-bottom:8px;">
+        <div><span style="color:#777;font-size:11px;text-transform:uppercase;display:block;">Gênero</span><span id="fd-genero"></span></div>
+        <div><span style="color:#777;font-size:11px;text-transform:uppercase;display:block;">Diretor</span><span id="fd-diretor"></span></div>
+        <div><span style="color:#777;font-size:11px;text-transform:uppercase;display:block;">Ano</span><span id="fd-ano"></span></div>
+        <div><span style="color:#777;font-size:11px;text-transform:uppercase;display:block;">Duração</span><span id="fd-duracao"></span></div>
+      </div>
+      <div style="font-size:13px;color:#fff;margin-bottom:6px;"><span style="color:#777;font-size:11px;text-transform:uppercase;display:block;">Elenco</span><span id="fd-elenco"></span></div>
+      <div id="fd-imdb" style="color:#ffce4d;font-size:13px;font-weight:700;margin-bottom:18px;"></div>
+      <button id="fd-assistir" style="background:#e63b1e;color:#fff;border:none;padding:13px 26px;border-radius:6px;font-weight:800;font-size:15px;cursor:pointer;">▶ Assistir Agora</button>
+    </div>
+  </div>
+</div>
+
+<!-- TELA CHEIA — GRANDES FILMES -->
+<div id="filme-watch" style="display:none;position:fixed;inset:0;z-index:10000;background:#0a0a0a;flex-direction:column;">
+  <div style="display:flex;align-items:center;gap:18px;padding:16px 20px;background:#111;border-bottom:1px solid #222;">
+    <button onclick="closeFilmeWatch()" style="background:#e63b1e;color:#fff;border:none;padding:11px 22px;border-radius:6px;font-weight:800;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:8px;white-space:nowrap;">← VOLTAR</button>
+    <div>
+      <div id="filme-watch-breadcrumb" style="font-size:11px;color:#E8543E;font-weight:700;letter-spacing:.5px;text-transform:uppercase;"></div>
+      <div id="filme-watch-title" style="font-size:18px;font-weight:900;color:#fff;"></div>
+    </div>
+  </div>
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;background:#000;">
+    <div style="width:100%;height:100%;">
+      <iframe id="filme-watch-iframe" src="" style="width:100%;height:100%;border:0;" allow="autoplay; fullscreen" allowfullscreen></iframe>
+    </div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 20px;background:#111;border-top:1px solid #222;font-size:11px;color:#777;">
+    <span>PLAYER INCORPORADO</span>
+    <span>Conteúdo espelhado de: YOUTUBE</span>
+  </div>
+</div>
+
+
+<div id="rede-video-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.94);align-items:center;justify-content:center;">
+  <div style="position:relative;width:90%;max-width:960px;aspect-ratio:16/9;">
+    <button onclick="closeRedeVideo()" style="position:absolute;top:-44px;right:0;background:none;border:none;color:#fff;font-size:32px;cursor:pointer;opacity:.85;">✕</button>
+    <div id="rede-video-wrap" style="width:100%;height:100%;"></div>
+  </div>
+</div>
+
+<section class="rede-media-section">
+  <div class="container">
+    <div class="rede-media-head">
+      <div class="rede-media-eyebrow">Central de Conteúdo da Rede</div>
+      <div class="rede-media-title">📺 Assista na Rede TV Sul Capixaba</div>
+      <p class="rede-media-sub">Os principais conteúdos das emissoras da Rede TV Sul Capixaba.</p>
+    </div>
+
+    <div class="rede-sub-block">
+      <div class="rede-sub-title">TV Marataízes <span class="rede-sub-badge">VOD</span></div>
+      <div class="rede-row-wrap">
+        <button class="rede-arrow prev" id="rede-mtz-prev">&#8249;</button>
+        <div class="rede-row" id="rede-mtz-row">
+      <div class="rede-card"><a href="/entenda-sua-cidade/especial-1/" style="text-decoration:none">
+        <div class="rede-thumb"><img src="https://cdn.jsdelivr.net/gh/Raulgrecco/twitch-marataizes@main/clima/entenda.png" alt="Como Funciona a Administração Pública">
+          <div class="rede-overlay"><div class="rede-title">Como Funciona a Administração Pública</div><span class="rede-btn">▶ Assistir</span></div></div></a></div>
+      <div class="rede-card"><a href="/entenda-sua-cidade/especial-2/" style="text-decoration:none">
+        <div class="rede-thumb"><img src="https://cdn.jsdelivr.net/gh/Raulgrecco/twitch-marataizes@main/clima/entenda.png" alt="Fiscalização e Como a Máquina Pública Funciona">
+          <div class="rede-overlay"><div class="rede-title">Fiscalização e Como a Máquina Pública Funciona</div><span class="rede-btn">▶ Assistir</span></div></div></a></div>
+      <div class="rede-card" onclick="openRedeVideo('https://player.castr.com/vod/WKrOtRolJ34I50iz')">
+        <div class="rede-thumb"><img src="https://cdn.jsdelivr.net/gh/Raulgrecco/twitch-marataizes@main/clima/oquequer.png" alt="O Que Marataízes Quer?">
+          <div class="rede-overlay"><div class="rede-title">O Que Marataízes Quer?</div><span class="rede-btn">▶ Assistir agora</span></div></div></div>
+      <div class="rede-card" onclick="openRedeVideo('https://player.castr.com/vod/41S25BLaKsltCV66')">
+        <div class="rede-thumb"><img src="https://cdn.jsdelivr.net/gh/Raulgrecco/twitch-marataizes@main/clima/A%20cidade%20Respondeu%20parte%201%20.png" alt="A Cidade Respondeu — Parte 1">
+          <div class="rede-overlay"><div class="rede-title">A Cidade Respondeu — Parte 1</div><span class="rede-btn">▶ Assistir agora</span></div></div></div>
+      <div class="rede-card" onclick="openRedeVideo('https://player.castr.com/vod/meEHkRlMhN7IUfuS')">
+        <div class="rede-thumb"><img src="https://cdn.jsdelivr.net/gh/Raulgrecco/twitch-marataizes@main/clima/dicasdefilmes.png" alt="Dicas de Filmes">
+          <div class="rede-overlay"><div class="rede-title">Dicas de Filmes</div><span class="rede-btn">▶ Assistir agora</span></div></div></div>
+      <div class="rede-card" onclick="openRedeVideo('https://player.castr.com/vod/sJlkDhuZNkDWA1cI')">
+        <div class="rede-thumb"><img src="https://cdn.jsdelivr.net/gh/Raulgrecco/twitch-marataizes@main/clima/rota300.png" alt="Rota 300 · Ep. 4">
+          <div class="rede-overlay"><div class="rede-title">Rota 300 · Ep. 4</div><span class="rede-btn">▶ Assistir agora</span></div></div></div>
+      <div class="rede-card" onclick="openRedeVideo('https://player.castr.com/vod/GGvxkkihKyDVq8lb')">
+        <div class="rede-thumb"><img src="https://cdn.jsdelivr.net/gh/Raulgrecco/twitch-marataizes@main/clima/capaclaudia%20Programa%20Claudia%20Rayllar.png" alt="Programa Claudia Rayllar">
+          <div class="rede-overlay"><div class="rede-title">Programa Claudia Rayllar</div><span class="rede-btn">▶ Assistir agora</span></div></div></div>
+      <div class="rede-card"><a href="https://tvmarataizes.digital/diva/" style="text-decoration:none">
+        <div class="rede-thumb"><img src="https://cdn.jsdelivr.net/gh/Raulgrecco/twitch-marataizes@main/clima/diva.png" alt="O Divã do Abacaxi">
+          <div class="rede-overlay"><div class="rede-title">O Divã do Abacaxi</div><span class="rede-btn">Assistir episódios</span></div></div></a></div>
+      <div class="rede-card"><a href="https://tvmarataizes.digital/saudemarataizes/" style="text-decoration:none">
+        <div class="rede-thumb"><img src="https://cdn.jsdelivr.net/gh/Raulgrecco/twitch-marataizes@main/clima/fotosecretariadesaude.png" alt="Saúde Pública em Marataízes">
+          <div class="rede-overlay"><div class="rede-title">Como está a Saúde em Marataízes?</div><span class="rede-btn">▶ Ver reportagem</span></div></div></a></div>
+      <!-- OCULTO ATÉ REVISAR -->
+      <div class="rede-card" style="display:none"><a href="https://tvmarataizes.digital/marataizes-em-movimento" style="text-decoration:none">
+        <div class="rede-thumb"><img src="https://cdn.jsdelivr.net/gh/Raulgrecco/twitch-marataizes@main/clima/PREFEITO.png" alt="Marataízes está em movimento">
+          <div class="rede-overlay"><div class="rede-title">Marataízes está em movimento</div><span class="rede-btn">Assistir aqui</span></div></div></a></div>
+      <div class="rede-card" style="display:none"><a href="https://tvmarataizes.digital/expo-inovadora-2026" style="text-decoration:none">
+        <div class="rede-thumb"><img src="https://cdn.jsdelivr.net/gh/Raulgrecco/twitch-marataizes@main/clima/EXPO.png" alt="Cidade Expo Inovadora">
+          <div class="rede-overlay"><div class="rede-title">Cidade Expo Inovadora</div><span class="rede-btn">Assistir aqui</span></div></div></a></div>
+      <div class="rede-card" style="display:none"><a href="https://tvmarataizes.digital/leituraemcena/" style="text-decoration:none">
+        <div class="rede-thumb"><img src="https://cdn.jsdelivr.net/gh/Raulgrecco/twitch-marataizes@main/clima/Leitura.png" alt="Leitura em Cena">
+          <div class="rede-overlay"><div class="rede-title">Leitura em Cena</div><span class="rede-btn">Assistir episódios</span></div></div></a></div>
+      <div class="rede-card" style="display:none"><a href="https://tvmarataizes.digital/vitrine-marataizes.html" style="text-decoration:none">
+        <div class="rede-thumb"><img src="https://cdn.jsdelivr.net/gh/Raulgrecco/twitch-marataizes@main/clima/vitrine-thumb.png" alt="Vitrine Marataízes">
+          <div class="rede-overlay"><div class="rede-title">Vitrine Marataízes</div><span class="rede-btn">Assistir episódios</span></div></div></a></div>
+
+        </div>
+        <button class="rede-arrow next" id="rede-mtz-next">&#8250;</button>
+      </div>
+    </div>
+
+    <div class="rede-sub-block">
+      <div class="rede-sub-title">TV Piúma <span class="rede-sub-badge">VOD</span></div>
+      <div class="rede-row-wrap">
+        <button class="rede-arrow prev" id="rede-pma-prev">&#8249;</button>
+        <div class="rede-row" id="rede-pma-row">
+
+      <!-- ✅ Card 1 — Conchinha TV Piúma -->
+      <div class="rede-card" onclick="openRedeVideo('https://player.castr.com/vod/cNHxhB2QuvIL748m')">
+        <div class="rede-thumb">
+          <img src="https://raw.githubusercontent.com/Biel2026ok/tvpiuma/main/conchinha%201.png" alt="Oi eu sou a Conchinha da TV Piúma"/>
+          <div class="rede-overlay">
+            <div class="rede-title">Oi eu sou a Conchinha da TV Piúma</div>
+            <span class="rede-btn">▶ Assistir</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ✅ Card 2 — Experimental TV Piúma -->
+      <div class="rede-card" onclick="openRedeVideo('https://player.castr.com/vod/3zAxXxFIqCvqAATy')">
+        <div class="rede-thumb">
+          <img src="https://raw.githubusercontent.com/Biel2026ok/tvpiuma/main/cultura1.png" alt="Experimental TV Piúma"/>
+          <div class="rede-overlay">
+            <div class="rede-title">Experimental TV Piúma</div>
+            <span class="rede-btn">▶ Assistir</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ✅ Card 3 — Piúma em Movimento -->
+      <div class="rede-card" onclick="openRedeVideo('https://player.castr.com/vod/ZdAsGeOWY4SHJcem')">
+        <div class="rede-thumb">
+          <img src="https://raw.githubusercontent.com/Biel2026ok/tvpiuma/main/piuma2.png" alt="Piúma em Movimento"/>
+          <div class="rede-overlay">
+            <div class="rede-title">Piúma em Movimento</div>
+            <span class="rede-btn">▶ Assistir</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ✅ Card 4 — Trilha no Monte Agha -->
+      <div class="rede-card" onclick="openRedeVideo('https://player.castr.com/vod/J395JqzNXT3x7nvf')">
+        <div class="rede-thumb">
+          <img src="https://raw.githubusercontent.com/Biel2026ok/tvpiuma/main/fotospiuma/Monte%20Agha.png" alt="Trilha no Monte Agha"/>
+          <div class="rede-overlay">
+            <div class="rede-title">Trilha no Monte Agha</div>
+            <span class="rede-btn">▶ Assistir</span>
+          </div>
+        </div>
+      </div>
+
+        </div>
+        <button class="rede-arrow next" id="rede-pma-next">&#8250;</button>
+      </div>
+    </div>
+
+  </div>
+
+<div id="rede-grandes-filmes">
+  <div style="text-align:center;margin-bottom:6px;">
+    <div style="font-size:11px;font-weight:800;color:#E8543E;letter-spacing:3px;text-transform:uppercase;">Cinema</div>
+    <h2 style="font-size:24px;font-weight:900;color:#fff;margin:2px 0 8px;letter-spacing:1px;">🎬 GRANDES FILMES</h2>
+    <p style="font-size:13px;color:#9c9c9c;max-width:560px;margin:0 auto 14px;line-height:1.6;">Uma seleção especial da TV Sul Capixaba com grandes clássicos, filmes premiados e histórias inesquecíveis do cinema.</p>
+  </div>
+  <div class="rede-row-wrap">
+    <button class="rede-arrow prev" id="rede-filmes-prev">&#8249;</button>
+    <div class="rede-row" id="rede-filmes-row">
+
+      <!-- 1. Expresso do Amanhã -->
+      <div class="rede-card" onclick="openFilmeDetail('expresso_amanha')">
+        <div class="rede-thumb">
+          <span class="rede-ribbon">Essencial</span>
+          <img src="https://img.youtube.com/vi/39sp73Zsp9o/hqdefault.jpg" alt="Expresso do Amanhã"/>
+          <div class="rede-overlay">
+            <div class="rede-title">Expresso do Amanhã</div>
+            <span class="rede-credit">💥 AÇÃO</span>
+            <span class="rede-imdb">⭐ IMDb 7.8</span>
+            <span class="rede-btn">▶ Assistir Agora</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. O Poder e a Lei -->
+      <div class="rede-card" onclick="openFilmeDetail('poder_e_a_lei')">
+        <div class="rede-thumb">
+          <span class="rede-ribbon">Indicação da Redação</span>
+          <img src="https://img.youtube.com/vi/XZOOxqtD1-Q/hqdefault.jpg" alt="O Poder e a Lei"/>
+          <div class="rede-overlay">
+            <div class="rede-title">O Poder e a Lei</div>
+            <span class="rede-credit">🎬 INDICAÇÃO DA REDAÇÃO</span>
+            <span class="rede-imdb">⭐ IMDb 7.3</span>
+            <span class="rede-btn">▶ Assistir Agora</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. O Lado Bom da Vida -->
+      <div class="rede-card" onclick="openFilmeDetail('lado_bom_da_vida')">
+        <div class="rede-thumb">
+          <span class="rede-ribbon">Clássico</span>
+          <img src="https://img.youtube.com/vi/ZB4SgYcWAkk/hqdefault.jpg" alt="O Lado Bom da Vida"/>
+          <div class="rede-overlay">
+            <div class="rede-title">O Lado Bom da Vida</div>
+            <span class="rede-credit">🏆 CLÁSSICO MODERNO</span>
+            <span class="rede-imdb">⭐ IMDb 7.7</span>
+            <span class="rede-btn">▶ Assistir Agora</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Carol -->
+      <div class="rede-card" onclick="openFilmeDetail('carol')">
+        <div class="rede-thumb">
+          <span class="rede-ribbon">Premiado</span>
+          <img src="https://img.youtube.com/vi/3Tv5_qkTjNg/hqdefault.jpg" alt="Carol"/>
+          <div class="rede-overlay">
+            <div class="rede-title">Carol</div>
+            <span class="rede-credit">⭐ PREMIADO</span>
+            <span class="rede-imdb">⭐ IMDb 7.2</span>
+            <span class="rede-btn">▶ Assistir Agora</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Grandes Olhos -->
+      <div class="rede-card" onclick="openFilmeDetail('grandes_olhos')">
+        <div class="rede-thumb">
+          <span class="rede-ribbon">Drama Premiado</span>
+          <img src="https://img.youtube.com/vi/dSLzeZDruY0/hqdefault.jpg" alt="Grandes Olhos"/>
+          <div class="rede-overlay">
+            <div class="rede-title">Grandes Olhos</div>
+            <span class="rede-credit">🎭 DRAMA PREMIADO</span>
+            <span class="rede-imdb">⭐ IMDb 7.0</span>
+            <span class="rede-btn">▶ Assistir Agora</span>
+          </div>
+        </div>
+      </div>
+      <div class="rede-card" onclick="openFilmeDetail('melhor_lance')">
+        <div class="rede-thumb">
+          <span class="rede-ribbon">Suspense</span>
+          <img src="https://img.youtube.com/vi/zo4tJxlTbWs/hqdefault.jpg" alt="O Melhor Lance"/>
+          <div class="rede-overlay">
+            <div class="rede-title">O Melhor Lance</div>
+            <span class="rede-credit">🧠 SUSPENSE</span>
+            <span class="rede-imdb">⭐ IMDb 7.8</span>
+            <span class="rede-btn">▶ Assistir Agora</span>
+          </div>
+        </div>
+      </div>
+      <div class="rede-card" onclick="openFilmeDetail('treze_assassinos')">
+        <div class="rede-thumb">
+          <span class="rede-ribbon">Clássico</span>
+          <img src="https://img.youtube.com/vi/nFYjdywfIpg/hqdefault.jpg" alt="13 Assassinos"/>
+          <div class="rede-overlay">
+            <div class="rede-title">13 Assassinos</div>
+            <span class="rede-credit">🏆 CLÁSSICO</span>
+            <span class="rede-imdb">⭐ IMDb 7.6</span>
+            <span class="rede-btn">▶ Assistir Agora</span>
+          </div>
+        </div>
+      </div>
+      <div class="rede-card" onclick="openFilmeDetail('corra_menino_corra')">
+        <div class="rede-thumb">
+          <span class="rede-ribbon">Baseado em Fatos</span>
+          <img src="https://img.youtube.com/vi/TBIrGx3P57Y/hqdefault.jpg" alt="Corra, Menino, Corra"/>
+          <div class="rede-overlay">
+            <div class="rede-title">Corra, Menino, Corra</div>
+            <span class="rede-credit">🔥 BASEADO EM FATOS</span>
+            <span class="rede-imdb">⭐ IMDb 7.8</span>
+            <span class="rede-btn">▶ Assistir Agora</span>
+          </div>
+        </div>
+      </div>
+      <div class="rede-card" onclick="openFilmeDetail('vicky_cristina_barcelona')">
+        <div class="rede-thumb">
+          <span class="rede-ribbon">Oscar</span>
+          <img src="https://img.youtube.com/vi/1pG7IhXQ6d4/hqdefault.jpg" alt="Vicky Cristina Barcelona"/>
+          <div class="rede-overlay">
+            <div class="rede-title">Vicky Cristina Barcelona</div>
+            <span class="rede-credit">🎖 OSCAR</span>
+            <span class="rede-imdb">⭐ IMDb 7.1</span>
+            <span class="rede-btn">▶ Assistir Agora</span>
+          </div>
+        </div>
+      </div>
+      <div class="rede-card" onclick="openFilmeDetail('revolver')">
+        <div class="rede-thumb">
+          <span class="rede-ribbon">Cult</span>
+          <img src="https://img.youtube.com/vi/6JebCclDVus/hqdefault.jpg" alt="Revólver"/>
+          <div class="rede-overlay">
+            <div class="rede-title">Revólver</div>
+            <span class="rede-credit">🌍 CULT</span>
+            <span class="rede-imdb">⭐ IMDb 6.5</span>
+            <span class="rede-btn">▶ Assistir Agora</span>
+          </div>
+        </div>
+      </div>
+      <div class="rede-card" onclick="openFilmeDetail('relutante_fundamentalista')">
+        <div class="rede-thumb">
+          <span class="rede-ribbon">Indicação da Redação</span>
+          <img src="https://img.youtube.com/vi/WGtmSiEr0mg/hqdefault.jpg" alt="O Relutante Fundamentalista"/>
+          <div class="rede-overlay">
+            <div class="rede-title">O Relutante Fundamentalista</div>
+            <span class="rede-credit">🎬 INDICAÇÃO DA REDAÇÃO</span>
+            <span class="rede-imdb">⭐ IMDb 6.8</span>
+            <span class="rede-btn">▶ Assistir Agora</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rede-card" onclick="openFilmeDetail('doador_memorias')">
+        <div class="rede-thumb">
+          <span class="rede-ribbon">Ficção Científica</span>
+          <img src="https://img.youtube.com/vi/NVWD5RRY2Cc/hqdefault.jpg" alt="O Doador de Memórias"/>
+          <div class="rede-overlay">
+            <div class="rede-title">O Doador de Memórias</div>
+            <span class="rede-credit">🌍 FICÇÃO CIENTÍFICA</span>
+            <span class="rede-imdb">⭐ IMDb 6.5</span>
+            <span class="rede-btn">▶ Assistir Agora</span>
+          </div>
+        </div>
+      </div>
+      <div class="rede-card" onclick="openFilmeDetail('harry_brown')">
+        <div class="rede-thumb">
+          <span class="rede-ribbon">Ação</span>
+          <img src="https://img.youtube.com/vi/Xd-nhVPZDp8/hqdefault.jpg" alt="Harry Brown"/>
+          <div class="rede-overlay">
+            <div class="rede-title">Harry Brown</div>
+            <span class="rede-credit">💥 AÇÃO</span>
+            <span class="rede-imdb">⭐ IMDb 7.2</span>
+            <span class="rede-btn">▶ Assistir Agora</span>
+          </div>
+        </div>
+      </div>
+      <div class="rede-card" onclick="openFilmeDetail('november_man')">
+        <div class="rede-thumb">
+          <span class="rede-ribbon">Espionagem</span>
+          <img src="https://img.youtube.com/vi/Tqn3rJQNijc/hqdefault.jpg" alt="November Man"/>
+          <div class="rede-overlay">
+            <div class="rede-title">November Man</div>
+            <span class="rede-credit">🕵️ ESPIONAGEM</span>
+            <span class="rede-imdb">⭐ IMDb 6.3</span>
+            <span class="rede-btn">▶ Assistir Agora</span>
+          </div>
+        </div>
+      </div>
+      <div class="rede-card" onclick="openFilmeDetail('wasabi')">
+        <div class="rede-thumb">
+          <span class="rede-ribbon">Ação / Comédia</span>
+          <img src="https://img.youtube.com/vi/421-VAmkTU4/hqdefault.jpg" alt="Wasabi"/>
+          <div class="rede-overlay">
+            <div class="rede-title">Wasabi</div>
+            <span class="rede-credit">😄 AÇÃO / COMÉDIA</span>
+            <span class="rede-imdb">⭐ IMDb 6.7</span>
+            <span class="rede-btn">▶ Assistir Agora</span>
+          </div>
+        </div>
+      </div>
+      <div class="rede-card" onclick="openFilmeDetail('cao_de_briga')">
+        <div class="rede-thumb">
+          <span class="rede-ribbon">Ação</span>
+          <img src="https://img.youtube.com/vi/-imSUhbD--w/hqdefault.jpg" alt="Cão de Briga"/>
+          <div class="rede-overlay">
+            <div class="rede-title">Cão de Briga</div>
+            <span class="rede-credit">🥊 AÇÃO</span>
+            <span class="rede-imdb">⭐ IMDb 7.0</span>
+            <span class="rede-btn">▶ Assistir Agora</span>
+          </div>
+        </div>
+      </div>
+      <div class="rede-card" onclick="openFilmeDetail('momentum')">
+        <div class="rede-thumb">
+          <span class="rede-ribbon">Ação</span>
+          <img src="https://img.youtube.com/vi/UqAWOwwD8c0/hqdefault.jpg" alt="Momentum"/>
+          <div class="rede-overlay">
+            <div class="rede-title">Momentum</div>
+            <span class="rede-credit">💥 AÇÃO</span>
+            <span class="rede-imdb">⭐ IMDb 5.5</span>
+            <span class="rede-btn">▶ Assistir Agora</span>
+          </div>
+        </div>
+      </div>
+      <div class="rede-card" onclick="openFilmeDetail('amnesia')">
+        <div class="rede-thumb">
+          <span class="rede-ribbon">Suspense</span>
+          <img src="https://img.youtube.com/vi/XFVHv5-zGUw/hqdefault.jpg" alt="Amnésia"/>
+          <div class="rede-overlay">
+            <div class="rede-title">Amnésia</div>
+            <span class="rede-credit">🧠 SUSPENSE</span>
+            <span class="rede-imdb">⭐ IMDb 6.4</span>
+            <span class="rede-btn">▶ Assistir Agora</span>
+          </div>
+        </div>
+      </div>
+      <div class="rede-card" onclick="openFilmeDetail('taxi4')">
+        <div class="rede-thumb">
+          <span class="rede-ribbon">Ação / Comédia</span>
+          <img src="https://img.youtube.com/vi/OpNhMO-_Ak4/hqdefault.jpg" alt="Taxi 4"/>
+          <div class="rede-overlay">
+            <div class="rede-title">Taxi 4</div>
+            <span class="rede-credit">🚗 AÇÃO / COMÉDIA</span>
+            <span class="rede-imdb">⭐ IMDb 5.6</span>
+            <span class="rede-btn">▶ Assistir Agora</span>
+          </div>
+        </div>
+      </div>
+      <div class="rede-card" onclick="openFilmeDetail('dose_dupla')">
+        <div class="rede-thumb">
+          <span class="rede-ribbon">Ação</span>
+          <img src="https://img.youtube.com/vi/vUtmQH5o5KE/hqdefault.jpg" alt="Dose Dupla"/>
+          <div class="rede-overlay">
+            <div class="rede-title">Dose Dupla</div>
+            <span class="rede-credit">💥 AÇÃO</span>
+            <span class="rede-imdb">⭐ IMDb 6.7</span>
+            <span class="rede-btn">▶ Assistir Agora</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <button class="rede-arrow next" id="rede-filmes-next">&#8250;</button>
+  </div>
+</div>
+
+
+</section>
+
+<script>
+const filmes = {
+  expresso_amanha:{
+    titulo:"Expresso do Amanhã",
+    poster:"https://img.youtube.com/vi/39sp73Zsp9o/hqdefault.jpg",
+    sinopse:"Os últimos sobreviventes de uma tentativa fracassada de conter o aquecimento global vivem confinados em um trem que nunca para, divididos por classes sociais.",
+    ano:"2013", duracao:"2h06min", genero:"Ficção Científica, Ação",
+    diretor:"Bong Joon-ho", elenco:"Chris Evans, Song Kang-ho, Tilda Swinton",
+    classificacao:"14", imdb:"7.8", selo:"💥 Ação", youtube:"39sp73Zsp9o"
+  },
+  poder_e_a_lei:{
+    titulo:"O Poder e a Lei",
+    poster:"https://img.youtube.com/vi/XZOOxqtD1-Q/hqdefault.jpg",
+    sinopse:"Mick Haller é um advogado defensor que atende seus clientes a partir do banco de trás de uma limusine, até assumir um caso que muda completamente as regras do jogo.",
+    ano:"2011", duracao:"1h58min", genero:"Suspense, Drama",
+    diretor:"Brad Furman", elenco:"Matthew McConaughey, Marisa Tomei, Ryan Phillippe",
+    classificacao:"14", imdb:"7.3", selo:"🎬 Indicação da Redação", youtube:"XZOOxqtD1-Q"
+  },
+  lado_bom_da_vida:{
+    titulo:"O Lado Bom da Vida",
+    poster:"https://img.youtube.com/vi/ZB4SgYcWAkk/hqdefault.jpg",
+    sinopse:"Após passar um tempo internado, Pat Solitano perde quase tudo e volta a morar com os pais, decidido a reconstruir sua vida — até cruzar o caminho de Tiffany.",
+    ano:"2013", duracao:"2h02min", genero:"Drama, Comédia",
+    diretor:"David O. Russell", elenco:"Bradley Cooper, Jennifer Lawrence, Robert De Niro",
+    classificacao:"12", imdb:"7.7", selo:"🏆 Clássico Moderno", youtube:"ZB4SgYcWAkk"
+  },
+  carol:{
+    titulo:"Carol",
+    poster:"https://img.youtube.com/vi/3Tv5_qkTjNg/hqdefault.jpg",
+    sinopse:"Therese, uma jovem vendedora, se apaixona por Carol, uma mulher elegante em meio a um divórcio conturbado. Juntas, vivem um romance que desafia a época.",
+    ano:"2015", duracao:"1h58min", genero:"Drama, Romance",
+    diretor:"Todd Haynes", elenco:"Cate Blanchett, Rooney Mara, Sarah Paulson",
+    classificacao:"14", imdb:"7.2", selo:"⭐ Premiado", youtube:"3Tv5_qkTjNg"
+  },
+  grandes_olhos:{
+    titulo:"Grandes Olhos",
+    poster:"https://img.youtube.com/vi/dSLzeZDruY0/hqdefault.jpg",
+    sinopse:"Margaret Keane cria pinturas que fazem sucesso nos anos 1950, mas seu marido Walter assume publicamente a autoria — até ela decidir ir à justiça pela verdade.",
+    ano:"2014", duracao:"1h46min", genero:"Drama, Biografia",
+    diretor:"Tim Burton", elenco:"Amy Adams, Christoph Waltz",
+    classificacao:"12", imdb:"7.0", selo:"🎭 Drama Premiado", youtube:"dSLzeZDruY0"
+  },
+  melhor_lance:{
+    titulo:"O Melhor Lance",
+    poster:"https://img.youtube.com/vi/zo4tJxlTbWs/hqdefault.jpg",
+    sinopse:"Virgil Oldman, um rico leiloeiro de arte, conta com a ajuda de um jovem restaurador para compreender os segredos de uma misteriosa herdeira.",
+    ano:"2013", duracao:"2h04min", genero:"Drama, Suspense, Romance",
+    diretor:"Giuseppe Tornatore", elenco:"Geoffrey Rush",
+    classificacao:"14", imdb:"7.8", selo:"🧠 Suspense", youtube:"zo4tJxlTbWs"
+  },
+  treze_assassinos:{
+    titulo:"13 Assassinos",
+    poster:"https://img.youtube.com/vi/nFYjdywfIpg/hqdefault.jpg",
+    sinopse:"No Japão feudal do século XIX, o sádico e cruel Lorde Naritsugu ameaça a paz do país. Treze guerreiros se unem numa missão suicida para detê-lo.",
+    ano:"2010", duracao:"2h06min", genero:"Ação, Drama",
+    diretor:"Takashi Miike", elenco:"Koji Yakusho",
+    classificacao:"16", imdb:"7.6", selo:"🏆 Clássico", youtube:"nFYjdywfIpg"
+  },
+  corra_menino_corra:{
+    titulo:"Corra, Menino, Corra",
+    poster:"https://img.youtube.com/vi/TBIrGx3P57Y/hqdefault.jpg",
+    sinopse:"Baseado em uma história real, conta a emocionante jornada de um menino judeu de 9 anos que foge do gueto de Varsóvia e luta para sobreviver na floresta.",
+    ano:"2013", duracao:"1h55min", genero:"Drama, Guerra",
+    diretor:"Pepe Danquart", elenco:"Kamil Tkacz, Andy Tkacz",
+    classificacao:"14", imdb:"7.8", selo:"🔥 Baseado em fatos", youtube:"TBIrGx3P57Y"
+  },
+  vicky_cristina_barcelona:{
+    titulo:"Vicky Cristina Barcelona",
+    poster:"https://img.youtube.com/vi/1pG7IhXQ6d4/hqdefault.jpg",
+    sinopse:"Duas amigas americanas passam férias em Barcelona e se envolvem com um pintor sedutor e emocionalmente instável, sem saber da presença de sua ex-mulher.",
+    ano:"2008", duracao:"1h36min", genero:"Drama, Romance, Comédia",
+    diretor:"Woody Allen", elenco:"Javier Bardem, Penélope Cruz, Scarlett Johansson, Rebecca Hall",
+    classificacao:"16", imdb:"7.1", selo:"🎖 Oscar", youtube:"1pG7IhXQ6d4"
+  },
+  revolver:{
+    titulo:"Revólver",
+    poster:"https://img.youtube.com/vi/6JebCclDVus/hqdefault.jpg",
+    sinopse:"Após sete anos preso, o trapaceiro Jake Green sai decidido a se vingar do chefão do crime Dorothy Macha.",
+    ano:"2005", duracao:"1h51min", genero:"Ação, Suspense, Crime",
+    diretor:"Guy Ritchie", elenco:"Jason Statham, Ray Liotta, André 3000, Mark Strong",
+    classificacao:"16", imdb:"6.5", selo:"🌍 Cult", youtube:"6JebCclDVus"
+  },
+  relutante_fundamentalista:{
+    titulo:"O Relutante Fundamentalista",
+    poster:"https://img.youtube.com/vi/WGtmSiEr0mg/hqdefault.jpg",
+    sinopse:"Um jovem paquistanês persegue o sucesso corporativo em Wall Street e se vê envolvido em um conflito entre seu sonho americano e uma crise de reféns.",
+    ano:"2012", duracao:"2h10min", genero:"Drama, Suspense",
+    diretor:"Mira Nair", elenco:"Riz Ahmed, Kate Hudson",
+    classificacao:"14", imdb:"6.8", selo:"🎬 Indicação da Redação", youtube:"WGtmSiEr0mg"
+  },
+  doador_memorias:{
+    titulo:"O Doador de Memórias",
+    poster:"https://img.youtube.com/vi/NVWD5RRY2Cc/hqdefault.jpg",
+    sinopse:"Uma pequena comunidade vive em um mundo aparentemente ideal, sem doenças nem guerras, mas também sem sentimentos. Jonas descobre o perigoso segredo por trás dessa realidade.",
+    ano:"2014", duracao:"1h37min", genero:"Drama, Ficção Científica",
+    diretor:"Phillip Noyce", elenco:"Brenton Thwaites, Jeff Bridges, Meryl Streep",
+    classificacao:"12", imdb:"6.5", selo:"🌍 Ficção Científica", youtube:"NVWD5RRY2Cc"
+  },
+  harry_brown:{
+    titulo:"Harry Brown",
+    poster:"https://img.youtube.com/vi/Xd-nhVPZDp8/hqdefault.jpg",
+    sinopse:"Harry Brown é um viúvo e ex-fuzileiro naval que vive uma vida solitária em um conjunto habitacional dominado pelo crime. Quando seu melhor amigo é assassinado, ele decide fazer justiça com as próprias mãos.",
+    ano:"2009", duracao:"1h43min", genero:"Ação, Drama, Suspense",
+    diretor:"Daniel Barber", elenco:"Michael Caine, Emily Mortimer, David Bradley",
+    classificacao:"16", imdb:"7.2", selo:"💥 Ação", youtube:"Xd-nhVPZDp8"
+  },
+  november_man:{
+    titulo:"November Man",
+    poster:"https://img.youtube.com/vi/Tqn3rJQNijc/hqdefault.jpg",
+    sinopse:"Um ex-agente da CIA é convocado para resgatar uma agente infiltrada que corre perigo, entrando em confronto direto com seu antigo pupilo.",
+    ano:"2014", duracao:"1h48min", genero:"Ação, Espionagem, Suspense",
+    diretor:"Roger Donaldson", elenco:"Pierce Brosnan, Luke Bracey, Olga Kurylenko",
+    classificacao:"16", imdb:"6.3", selo:"🕵️ Espionagem", youtube:"Tqn3rJQNijc"
+  },
+  wasabi:{
+    titulo:"Wasabi",
+    poster:"https://img.youtube.com/vi/421-VAmkTU4/hqdefault.jpg",
+    sinopse:"Um durão detetive francês, chamado ao Japão para o funeral da mulher que amou, descobre que tem uma filha adolescente cuja vida corre perigo.",
+    ano:"2001", duracao:"1h34min", genero:"Ação, Comédia",
+    diretor:"Gérard Krawczyk", elenco:"Jean Reno, Ryōko Hirosue, Michel Muller",
+    classificacao:"12", imdb:"6.7", selo:"😄 Ação / Comédia", youtube:"421-VAmkTU4"
+  },
+  cao_de_briga:{
+    titulo:"Cão de Briga",
+    poster:"https://img.youtube.com/vi/-imSUhbD--w/hqdefault.jpg",
+    sinopse:"Desde a infância, Danny foi mantido como prisioneiro por Bart, um agiota cruel que o treinou como arma mortal. Um encontro com um afinador de pianos cego muda tudo.",
+    ano:"2005", duracao:"1h42min", genero:"Ação, Drama",
+    diretor:"Louis Leterrier", elenco:"Jet Li, Bob Hoskins, Morgan Freeman, Kerry Condon",
+    classificacao:"16", imdb:"7.0", selo:"🥊 Ação", youtube:"-imSUhbD--w"
+  },
+  momentum:{
+    titulo:"Momentum",
+    poster:"https://img.youtube.com/vi/UqAWOwwD8c0/hqdefault.jpg",
+    sinopse:"Alex, uma habilidosa ladra profissional, é convencida por seu antigo parceiro a realizar um último assalto que se revela muito mais perigoso do que parecia.",
+    ano:"2015", duracao:"1h36min", genero:"Ação, Suspense, Crime",
+    diretor:"Stephen Campanelli", elenco:"Olga Kurylenko, James Purefoy, Morgan Freeman",
+    classificacao:"16", imdb:"5.5", selo:"💥 Ação", youtube:"UqAWOwwD8c0"
+  },
+  amnesia:{
+    titulo:"Amnésia",
+    poster:"https://img.youtube.com/vi/XFVHv5-zGUw/hqdefault.jpg",
+    sinopse:"Depois de um terrível acidente, um homem acorda sofrendo de perda de memória e começa a desvendar um segredo perturbador sobre a mulher que diz ser sua esposa.",
+    ano:"2014", duracao:"1h30min", genero:"Suspense, Mistério",
+    diretor:"Michael Polish", elenco:"Kate Bosworth, Wes Bentley",
+    classificacao:"16", imdb:"6.4", selo:"🧠 Suspense", youtube:"XFVHv5-zGUw"
+  },
+  taxi4:{
+    titulo:"Taxi 4",
+    poster:"https://img.youtube.com/vi/OpNhMO-_Ak4/hqdefault.jpg",
+    sinopse:"Um bandido belga procurado em toda a Europa engana os policiais de Marselha, levando Daniel e Emilien a uma nova aventura tomada de perseguições e confusão.",
+    ano:"2007", duracao:"1h31min", genero:"Ação, Comédia",
+    diretor:"Gérard Krawczyk", elenco:"Samy Naceri, Frédéric Diefenthal, Bernard Farcy",
+    classificacao:"12", imdb:"5.6", selo:"🚗 Ação / Comédia", youtube:"OpNhMO-_Ak4"
+  },
+  dose_dupla:{
+    titulo:"Dose Dupla",
+    poster:"https://img.youtube.com/vi/vUtmQH5o5KE/hqdefault.jpg",
+    sinopse:"Um agente do DEA e um oficial da inteligência da Marinha trabalham infiltrados no mesmo cartel de drogas, sem saber que o outro também é um agente disfarçado.",
+    ano:"2013", duracao:"1h49min", genero:"Ação, Comédia, Crime",
+    diretor:"Baltasar Kormákur", elenco:"Denzel Washington, Mark Wahlberg, Paula Patton, Bill Paxton",
+    classificacao:"16", imdb:"6.7", selo:"💥 Ação", youtube:"vUtmQH5o5KE"
+  }
+};
+
+function openFilmeDetail(slug){
+  var f = filmes[slug];
+  if(!f || !f.youtube){ alert('Filme ainda não cadastrado.'); return; }
+  document.getElementById('fd-poster').style.backgroundImage="url("+f.poster+")";
+  document.getElementById('fd-titulo').textContent=f.titulo;
+  document.getElementById('fd-sinopse').textContent=f.sinopse;
+  document.getElementById('fd-selo').textContent=f.selo;
+  document.getElementById('fd-classificacao').textContent='Classificação: '+f.classificacao;
+  document.getElementById('fd-imdb').textContent='⭐ IMDb '+f.imdb;
+  document.getElementById('fd-genero').textContent=f.genero;
+  document.getElementById('fd-diretor').textContent=f.diretor;
+  document.getElementById('fd-ano').textContent=f.ano;
+  document.getElementById('fd-duracao').textContent=f.duracao;
+  document.getElementById('fd-elenco').textContent=f.elenco;
+  document.getElementById('fd-assistir').onclick=function(){
+    closeFilmeDetail();
+    openFilmeWatch(f.youtube, f.titulo, f.selo, f.ano, f.duracao);
+  };
+  document.getElementById('filme-detail').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function closeFilmeDetail(){
+  document.getElementById('filme-detail').style.display='none';
+  document.body.style.overflow='';
+}
+
+function openFilmeWatch(youtubeId, titulo, selo, ano, duracao){
+  var wasLive=!!document.getElementById('live-player');
+  destroyCurrentPlayer();
+  var wrapper=document.getElementById('player-wrapper');
+  if(wrapper){ wrapper.style.visibility='hidden'; wrapper._wasLive=wasLive; }
+  document.getElementById('filme-watch-iframe').src='https://www.youtube.com/embed/'+youtubeId+'?autoplay=1';
+  document.getElementById('filme-watch-title').textContent=titulo;
+  document.getElementById('filme-watch-breadcrumb').textContent='FILME'+(ano?' · '+ano:'')+(duracao?' · '+duracao:'')+(selo?' · '+selo:'');
+  document.getElementById('filme-watch').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function closeFilmeWatch(){
+  document.getElementById('filme-watch-iframe').src='';
+  document.getElementById('filme-watch').style.display='none';
+  document.body.style.overflow='';
+}
+
+function openRedeVideo(src, titulo, credito){
+  var wrap=document.getElementById('rede-video-wrap');
+  wrap.innerHTML='';
+  var iframe=document.createElement('iframe');
+  iframe.src=src+'?autoplay=1';
+  iframe.allow='autoplay; fullscreen';
+  iframe.allowFullscreen=true;
+  iframe.style.cssText='width:100%;height:100%;border:0;border-radius:8px;';
+  wrap.appendChild(iframe);
+  document.getElementById('rede-video-modal').style.display='flex';
+}
+function closeRedeVideo(){
+  document.getElementById('rede-video-wrap').innerHTML='';
+  document.getElementById('rede-video-modal').style.display='none';
+}
+document.getElementById('rede-video-modal').addEventListener('click',function(e){if(e.target===this)closeRedeVideo();});
+
+(function(){
+  function initRedeCarousel(rowId,prevId,nextId){
+    var row=document.getElementById(rowId),prev=document.getElementById(prevId),next=document.getElementById(nextId);
+    if(!row)return;
+    var amt=function(){var c=row.querySelector('.rede-card');return c?c.offsetWidth+12:220;};
+    if(next)next.addEventListener('click',function(){row.scrollBy({left:amt()*2,behavior:'smooth'});});
+    if(prev)prev.addEventListener('click',function(){row.scrollBy({left:-amt()*2,behavior:'smooth'});});
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    initRedeCarousel('rede-mtz-row','rede-mtz-prev','rede-mtz-next');
+    initRedeCarousel('rede-pma-row','rede-pma-prev','rede-pma-next');
+    initRedeCarousel('rede-filmes-row','rede-filmes-prev','rede-filmes-next');
+  });
+})();
+</script>
+
   <section class="section-tight">
     <div class="container">
       <div class="dual-hero">
