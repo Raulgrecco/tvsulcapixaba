@@ -480,20 +480,38 @@
   const REAL_EMBED_URL = "https://player.castr.com/vod/utAVVmJlplAvU97l?autoplay=true&muted=true&loop=true&controls=false";
   const DIREC_EMBED_URL = "https://player.castr.com/vod/X3XxT2UR9YEwtPEF?autoplay=true&muted=true&loop=true&controls=false";
 
-  function mountEmbed(containerId, url){
+  // ============================================================
+  // LOOP DE VERDADE PARA OS VÍDEOS DE FUNDO
+  // O player do Castr roda num iframe — de fora, não dá pra saber com
+  // certeza quando o vídeo termina, então o "loop=true" na URL nem
+  // sempre é suficiente. A solução aqui é reiniciar o iframe sozinho
+  // de tempos em tempos.
+  //
+  // AJUSTE o número de segundos de cada vídeo abaixo pra bater com a
+  // duração REAL dele. Se ficar curto, ele reinicia antes de acabar.
+  // Se ficar longo, o vídeo para e fica um tempo preto antes de
+  // recomeçar. Deixei 20s como valor seguro/genérico — troque pelo
+  // tempo exato de cada vídeo quando você souber.
+  // ============================================================
+  function mountEmbed(containerId, url, loopSeconds){
     const el = document.getElementById(containerId);
     if (!url || !el) return;
-    const iframe = document.createElement('iframe');
-    iframe.src = url;
-    iframe.setAttribute('allow', 'autoplay; fullscreen');
-    iframe.setAttribute('frameborder', '0');
-    el.appendChild(iframe);
+    function load(){
+      el.innerHTML = '';
+      const iframe = document.createElement('iframe');
+      iframe.src = url;
+      iframe.setAttribute('allow', 'autoplay; fullscreen');
+      iframe.setAttribute('frameborder', '0');
+      el.appendChild(iframe);
+    }
+    load();
+    if (loopSeconds) setInterval(load, loopSeconds * 1000);
   }
-  mountEmbed('heroMedia', HERO_EMBED_URL);
-  mountEmbed('statementMedia', STATEMENT_EMBED_URL);
-  mountEmbed('mechMedia', MECH_EMBED_URL);
-  mountEmbed('realMedia', REAL_EMBED_URL);
-  mountEmbed('direcMedia', DIREC_EMBED_URL);
+  mountEmbed('heroMedia', HERO_EMBED_URL, 60);
+  mountEmbed('statementMedia', STATEMENT_EMBED_URL, 60);
+  mountEmbed('mechMedia', MECH_EMBED_URL, 60);
+  mountEmbed('realMedia', REAL_EMBED_URL, 60);
+  mountEmbed('direcMedia', DIREC_EMBED_URL, 60);
 
   // Reveal on scroll
   const items = document.querySelectorAll('.reveal');
