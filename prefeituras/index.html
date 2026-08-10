@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Presença Municipal — TV Sul Capixaba</title>
+
+<!-- ============================================================
+     PRÉVIA NO WHATSAPP / LINK PREVIEW
+     Isso só funciona se o site estiver HOSPEDADO (com URL) — se você
+     enviar o arquivo .html direto como anexo no WhatsApp, ele mostra
+     só o ícone de arquivo, sem essa prévia. Pra prévia funcionar,
+     suba esse index.html num link (ex: presenca.tvmarataizes.digital)
+     e mande o LINK, não o arquivo.
+     ============================================================ -->
+<meta property="og:title" content="Não é um vídeo institucional. É um filme.">
+<meta property="og:description" content="Raul Grecco transforma uma realização da sua gestão em filme — 30 dias de presença na TV Sul Capixaba e no Instagram da sua cidade.">
+<meta property="og:type" content="website">
+<meta name="description" content="Não é um vídeo institucional. É um filme. Raul Grecco transforma uma realização da sua gestão em filme — 30 dias de presença na TV Sul Capixaba e no Instagram da sua cidade.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --black:#0a0a0a;
+    --panel:#141414;
+    --panel2:#1c1c1c;
+    --white:#ffffff;
+    --orange:#f0651b;
+    --gray:#8a8a8a;
+    --gray-dim:#5c5c5c;
+    --line:#2a2a2a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--black);
+    color:var(--white);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+  }
+  .disp{
+    font-family:'Archivo Black',sans-serif;
+    text-transform:uppercase;
+    line-height:0.86;
+    letter-spacing:-1px;
+  }
+  .eyebrow{
+    font-family:'Inter',sans-serif;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:var(--orange);
+  }
+  a{color:inherit;text-decoration:none;}
+
+  /* ---------- NAV ---------- */
+  .nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:26px 40px;
+    mix-blend-mode:difference;
+  }
+  .nav-mark{font-size:13px; font-weight:700; letter-spacing:2px;}
+  .nav-cta{font-size:12px; font-weight:600; letter-spacing:1.5px; border-bottom:1px solid var(--white); padding-bottom:3px;}
+
+  /* ---------- REVEAL ---------- */
+  .reveal{opacity:0; transform:translateY(28px); transition:opacity .8s ease, transform .8s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative; height:100vh; width:100%;
+    display:flex; flex-direction:column; justify-content:flex-end;
+    overflow:hidden;
+    background:
+      radial-gradient(ellipse 80% 60% at 30% 20%, #241208 0%, transparent 60%),
+      linear-gradient(160deg, #111 0%, #0a0a0a 60%);
+  }
+  .hero-media{position:absolute; inset:0; z-index:0;}
+  .hero-media iframe, .hero-media video{
+    position:absolute; top:50%; left:50%; width:100%; height:100%;
+    min-width:100%; min-height:100%;
+    transform:translate(-50%,-50%);
+    object-fit:cover; border:none;
+  }
+  .hero-media::after{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(10,10,10,.15) 0%, rgba(10,10,10,.55) 55%, rgba(10,10,10,.92) 100%);
+    z-index:1;
+  }
+  .hero-inner{position:relative; z-index:2; padding:0 40px 64px;}
+  .hero-eyebrow{margin-bottom:12px;}
+  .hero h1{
+    font-size:clamp(40px, 8.4vw, 118px);
+    color:var(--white);
+  }
+  .hero h1 .accent{color:var(--orange);}
+  .scroll-cue{
+    position:absolute; right:40px; bottom:32px; z-index:2;
+    font-size:11px; letter-spacing:2px; color:var(--gray);
+    display:flex; align-items:center; gap:10px;
+  }
+  .scroll-cue .bar{width:1px; height:34px; background:var(--gray); position:relative; overflow:hidden;}
+  .scroll-cue .bar::after{content:''; position:absolute; top:0; left:0; width:100%; height:30%; background:var(--orange); animation:scrollbar 1.8s infinite;}
+  @keyframes scrollbar{0%{top:-30%;} 100%{top:100%;}}
+
+  /* ---------- STATEMENT SECTIONS ---------- */
+  .statement{
+    min-height:100vh; display:flex; align-items:center;
+    padding:120px 40px; position:relative; overflow:hidden;
+  }
+  .statement-media{position:absolute; inset:0; z-index:0;}
+  .statement-media iframe, .statement-media video{
+    position:absolute; top:50%; left:50%; width:100%; height:100%;
+    min-width:100%; min-height:100%;
+    transform:translate(-50%,-50%);
+    object-fit:cover; border:none;
+  }
+  .statement-media::after{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(10,10,10,.55) 0%, rgba(10,10,10,.72) 100%);
+    z-index:1;
+  }
+  .statement-inner{max-width:1200px; margin:0 auto; width:100%; position:relative; z-index:2;}
+  .statement h2{
+    font-size:clamp(32px, 6.4vw, 84px);
+    color:var(--gray);
+  }
+  .statement h2 .hot{color:var(--white);}
+  .statement .pause{display:block; height:.4em;}
+
+  /* ---------- MECANISMO ---------- */
+  .mech{background:var(--panel); padding:140px 40px; position:relative; overflow:hidden;}
+  .mech-media{position:absolute; inset:0; z-index:0;}
+  .mech-media iframe, .mech-media video{
+    position:absolute; top:50%; left:50%; width:100%; height:100%;
+    min-width:100%; min-height:100%;
+    transform:translate(-50%,-50%);
+    object-fit:cover; border:none;
+  }
+  .mech-media::after{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(20,20,20,.78) 0%, rgba(20,20,20,.9) 100%);
+    z-index:1;
+  }
+  .mech-inner{max-width:1200px; margin:0 auto; position:relative; z-index:2;}
+  .mech-line{font-size:clamp(26px, 4.6vw, 56px); margin-bottom:10px;}
+  .mech-line.dim{color:var(--gray);}
+  .mech-line.hot{color:var(--orange);}
+  .mech-sub{font-size:15px; color:var(--gray); margin-top:28px; max-width:560px; line-height:1.6;}
+  .mech-big{
+    font-size:clamp(60px, 12vw, 160px);
+    margin:52px 0 8px;
+    color:var(--white);
+  }
+
+  /* ---------- REALIZAÇÕES GRID ---------- */
+  .real{padding:120px 40px 60px; position:relative;}
+  .real-media{position:absolute; inset:0; z-index:0; opacity:.35;}
+  .real-media iframe, .real-media video{
+    position:absolute; top:50%; left:50%; width:100%; height:100%;
+    min-width:100%; min-height:100%;
+    transform:translate(-50%,-50%);
+    object-fit:cover; border:none;
+  }
+  .real-media::after{content:''; position:absolute; inset:0; background:var(--black);}
+  .real-head{max-width:1200px; margin:0 auto 50px; position:relative; z-index:2;}
+  .real-head h2{font-size:clamp(30px,5vw,60px);}
+  .real-grid{
+    max-width:1200px; margin:0 auto; position:relative; z-index:2;
+    display:grid; grid-template-columns:repeat(3,1fr); gap:14px;
+  }
+  .real-tile{
+    position:relative; aspect-ratio:4/5; border-radius:2px; overflow:hidden;
+    cursor:pointer;
+    background:linear-gradient(155deg,var(--panel2),var(--panel) 70%);
+  }
+  .real-tile::before{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(200deg, var(--tile-a,#2a1408), transparent 65%);
+    opacity:.9;
+  }
+  .real-tile::after{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(0deg, rgba(0,0,0,.75) 0%, transparent 55%);
+  }
+  .real-tile span{
+    position:absolute; left:18px; right:18px; bottom:20px; z-index:2;
+    font-size:clamp(15px,2vw,22px); line-height:1.05;
+  }
+  .real-tile{transition:transform .5s cubic-bezier(.2,.8,.2,1);}
+  .real-tile:hover{transform:translateY(-6px);}
+
+  /* ---------- QUEM VAI DIRIGIR ---------- */
+  .direc{background:var(--black); padding:160px 40px 100px; position:relative; overflow:hidden;}
+  .direc-media{position:absolute; inset:0; z-index:0; opacity:.4;}
+  .direc-media iframe, .direc-media video{
+    position:absolute; top:50%; left:50%; width:100%; height:100%;
+    min-width:100%; min-height:100%;
+    transform:translate(-50%,-50%);
+    object-fit:cover; border:none;
+  }
+  .direc-media::after{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(10,10,10,.5) 0%, var(--black) 85%);
+  }
+  .direc-q{max-width:1200px; margin:0 auto 60px; position:relative; z-index:2;}
+  .direc-q h2{font-size:clamp(30px,5.6vw,72px); color:var(--gray);}
+  .direc-name{max-width:1200px; margin:0 auto 70px; position:relative; z-index:2;}
+  .direc-name h1{font-size:clamp(56px,11vw,150px); color:var(--orange);}
+  .direc-list{max-width:1200px; margin:0 auto; position:relative; z-index:2; display:grid; grid-template-columns:repeat(2,1fr); gap:0;}
+  .direc-item{
+    padding:26px 0; border-top:1px solid var(--line);
+    font-size:clamp(18px,2.2vw,26px);
+    font-family:'Archivo Black',sans-serif; text-transform:uppercase; letter-spacing:-0.5px; line-height:1;
+  }
+  .direc-item:nth-last-child(-n+2){border-bottom:1px solid var(--line);}
+  .direc-close{max-width:1200px; margin:60px auto 0;}
+  .direc-close p{font-size:clamp(20px,2.8vw,32px); color:var(--white); max-width:820px;}
+  .direc-close p .hot{color:var(--orange);}
+
+  /* ---------- SIMULAÇÃO ---------- */
+  .sim{background:var(--panel); padding:140px 40px;}
+  .sim-inner{max-width:1000px; margin:0 auto;}
+  .sim-head h2{font-size:clamp(28px,4.6vw,52px); margin-bottom:8px;}
+  .sim-head p{color:var(--gray); font-size:15px; margin-bottom:56px;}
+  .sim-card{
+    background:var(--black); border:1px solid var(--line); border-radius:6px;
+    padding:6px;
+  }
+  .sim-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:22px 26px; border-bottom:1px solid var(--line);
+    font-size:15px;
+  }
+  .sim-row:last-child{border-bottom:none;}
+  .sim-row .k{color:var(--gray); letter-spacing:1px; font-size:11px; text-transform:uppercase;}
+  .sim-row .v{font-weight:600;}
+  .sim-row .v.hot{color:var(--orange);}
+  .sim-tag{
+    display:inline-block; font-size:10px; letter-spacing:1.5px; text-transform:uppercase;
+    padding:4px 10px; border:1px solid var(--gray-dim); border-radius:20px; color:var(--gray);
+  }
+
+  /* ---------- PLANOS ---------- */
+  .plans{padding:140px 40px;}
+  .plans-inner{max-width:1200px; margin:0 auto;}
+  .plans-head h2{font-size:clamp(30px,5vw,60px); margin-bottom:60px;}
+  .plans-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line);}
+  .plan{background:var(--black); padding:44px 32px; position:relative;}
+  .plan.feat{background:var(--panel2);}
+  .plan .tag{position:absolute; top:20px; right:20px; font-size:10px; letter-spacing:1.5px; color:var(--orange); border:1px solid var(--orange); padding:4px 8px; border-radius:20px;}
+  .plan h3{font-family:'Archivo Black',sans-serif; text-transform:uppercase; font-size:22px; margin-bottom:18px;}
+  .plan .price{font-family:'Archivo Black',sans-serif; font-size:44px; color:var(--orange); margin-bottom:4px;}
+  .plan .per{font-size:12px; color:var(--gray); margin-bottom:30px;}
+  .plan ul{list-style:none;}
+  .plan li{font-size:13.5px; color:var(--gray); padding:9px 0; border-top:1px solid var(--line);}
+  .plan li:first-child{border-top:none;}
+
+  /* ---------- FOOTER / CTA ---------- */
+  .final{
+    min-height:80vh; display:flex; flex-direction:column; justify-content:center;
+    padding:60px 40px; position:relative;
+    background:linear-gradient(180deg, var(--black), #150a04 120%);
+  }
+  .final-inner{max-width:1200px; margin:0 auto; width:100%;}
+  .final h2{font-size:clamp(34px,7vw,96px); margin-bottom:44px;}
+  .final h2 .hot{color:var(--orange);}
+  .cta-btn{
+    display:inline-block; background:var(--orange); color:var(--white);
+    font-family:'Archivo Black',sans-serif; text-transform:uppercase; font-size:16px; letter-spacing:1px;
+    padding:20px 40px; border-radius:2px;
+  }
+  .foot-meta{
+    max-width:1200px; margin:90px auto 0; width:100%;
+    display:flex; justify-content:space-between; color:var(--gray-dim); font-size:12px;
+    border-top:1px solid var(--line); padding-top:26px;
+  }
+
+  @media (max-width:760px){
+    .real-grid{grid-template-columns:repeat(2,1fr);}
+    .direc-list{grid-template-columns:1fr;}
+    .direc-item:nth-last-child(-n+2){border-bottom:none;}
+    .direc-item:last-child{border-bottom:1px solid var(--line);}
+    .plans-grid{grid-template-columns:1fr;}
+    .nav{padding:20px 22px;}
+    .hero-inner, .statement, .mech, .real, .direc, .sim, .plans, .final{padding-left:22px; padding-right:22px;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-mark">TV SUL CAPIXABA</div>
+  <a class="nav-cta" href="#final">FALAR COM A GENTE</a>
+</nav>
+
+<!-- ============================================================
+     HERO — TROCAR PELO VÍDEO REAL
+     Opção A: cole um link de embed (Castr/YouTube/Vimeo) na
+     constante HERO_EMBED_URL, lá no <script> no fim do arquivo.
+     Opção B: troque a div .hero-media por uma tag <video autoplay
+     muted loop playsinline src="seu-video.mp4">.
+     Sem nenhum link, fica o fundo escuro com textura (like agora).
+     ============================================================ -->
+<section class="hero">
+  <div class="hero-media" id="heroMedia"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow eyebrow reveal">PROGRAMA DE PRESENÇA MUNICIPAL</div>
+    <h1 class="disp reveal">NÃO É UM VÍDEO<br>INSTITUCIONAL.<br><span class="accent">É UM FILME.</span></h1>
+  </div>
+  <div class="scroll-cue"><span>ROLE PARA VER</span><span class="bar"></span></div>
+</section>
+
+<section class="statement">
+  <div class="statement-media" id="statementMedia"></div>
+  <div class="statement-inner reveal">
+    <h2 class="disp">SUA GESTÃO NÃO PRECISA<br>DE <span class="hot">MAIS UM VÍDEO.</span></h2>
+    <span class="pause"></span>
+    <h2 class="disp">PRECISA DE UMA HISTÓRIA<br>QUE AS PESSOAS <span class="hot">LEMBREM.</span></h2>
+  </div>
+</section>
+
+<section class="mech">
+  <div class="mech-media" id="mechMedia"></div>
+  <div class="mech-inner">
+    <div class="mech-line dim disp reveal">VOCÊ ESCOLHE</div>
+    <div class="mech-line disp reveal">O QUE SUA GESTÃO PRECISA MOSTRAR.</div>
+    <p class="mech-sub reveal">Nós transformamos isso em filme.</p>
+
+    <div class="mech-big disp reveal">30 DIAS.</div>
+    <p class="mech-sub reveal">TV Sul Capixaba + Instagram oficial da Prefeitura. Distribuição pela própria estrutura da TV.</p>
+
+    <div class="mech-line hot disp reveal" style="margin-top:56px;">TODO MÊS, UMA NOVA HISTÓRIA.</div>
+  </div>
+</section>
+
+<section class="real">
+  <div class="real-head reveal">
+    <span class="eyebrow">Realizações</span>
+    <h2 class="disp" style="margin-top:10px;">Toda realização da sua gestão pode virar um filme.</h2>
+  </div>
+  <div class="real-media" id="realMedia"></div>
+  <div class="real-grid">
+    <div class="real-tile reveal" style="--tile-a:#3a1c08;"><span class="disp">01 — UMA OBRA</span></div>
+    <div class="real-tile reveal" style="--tile-a:#241a35;"><span class="disp">02 — UMA ESCOLA</span></div>
+    <div class="real-tile reveal" style="--tile-a:#0f2f2a;"><span class="disp">03 — UMA AÇÃO DE SAÚDE</span></div>
+    <div class="real-tile reveal" style="--tile-a:#33260a;"><span class="disp">04 — TURISMO</span></div>
+    <div class="real-tile reveal" style="--tile-a:#3a0f1c;"><span class="disp">05 — CULTURA</span></div>
+    <div class="real-tile reveal" style="--tile-a:#122a3a;"><span class="disp">06 — ESPORTE</span></div>
+  </div>
+</section>
+
+<section class="direc">
+  <div class="direc-media" id="direcMedia"></div>
+  <div class="direc-q reveal">
+    <h2 class="disp">QUEM VAI<br>DIRIGIR ISSO?</h2>
+  </div>
+  <div class="direc-name reveal">
+    <h1 class="disp">RAUL<br>GRECCO</h1>
+  </div>
+  <div class="direc-list">
+    <div class="direc-item reveal">TV Globo — 1998</div>
+    <div class="direc-item reveal">600+ comerciais</div>
+    <div class="direc-item reveal">Coca-Cola · AMBEV</div>
+    <div class="direc-item reveal">Volkswagen · McDonald's</div>
+    <div class="direc-item reveal">Burger King · Heineken</div>
+    <div class="direc-item reveal">Claro · Gatorade · Oral-B</div>
+    <div class="direc-item reveal">Renner · BBC · Bacardi</div>
+    <div class="direc-item reveal">Guaraná Antarctica — Portugal</div>
+    <div class="direc-item reveal">Cannes Short Film Corner</div>
+    <div class="direc-item reveal">Ao lado de John Toll (Oscar)</div>
+    <div class="direc-item reveal">Fábio Barreto · Breno Silveira</div>
+    <div class="direc-item reveal">Andrucha Waddington · René Sampaio</div>
+    <div class="direc-item reveal">Longa: Gatão de Meia Idade</div>
+    <div class="direc-item reveal">Longa: Nossa Senhora do Caravaggio</div>
+    <div class="direc-item reveal">Longa: Doces Bárbaros</div>
+    <div class="direc-item reveal">DVD: Marisa Monte</div>
+    <div class="direc-item reveal">DVD: Djavan — Milagreiros</div>
+    <div class="direc-item reveal">Gal Costa · Bethânia · Caetano</div>
+    <div class="direc-item reveal">Documentário: Mulheres da Mangueira</div>
+    <div class="direc-item reveal">DVD Rosemary — patrocínio Petrobras</div>
+    <div class="direc-item reveal">Institucional Petrobras</div>
+    <div class="direc-item reveal">Lei Rouanet — 2 projetos</div>
+    <div class="direc-item reveal">Ponto de Cultura · Min. da Cultura</div>
+    <div class="direc-item reveal">Circo Criart — aprovado Secult/ES</div>
+    <div class="direc-item reveal">Mestres do Jongo de Itapemirim</div>
+    <div class="direc-item reveal">Fundador · TV Marataízes</div>
+    <div class="direc-item reveal">Fundador · TV Sul Capixaba</div>
+    <div class="direc-item reveal">130.185 impactos em 8 meses</div>
+  </div>
+  <div class="direc-close reveal">
+    <p>Essa experiência não vem no orçamento de uma produtora.<br><span class="hot">Ela vem na direção.</span></p>
+  </div>
+</section>
+
+<section class="sim">
+  <div class="sim-inner">
+    <div class="sim-head reveal">
+      <span class="eyebrow">Como fica, na prática</span>
+      <h2 class="disp" style="margin-top:10px;">Uma gestão em movimento.</h2>
+      <p>Uma realização. Um filme. 30 dias de presença.</p>
+    </div>
+    <div class="sim-card reveal">
+      <div class="sim-row"><span class="k">Canal</span><span class="v">TV Sul Capixaba</span></div>
+      <div class="sim-row"><span class="k">Distribuição</span><span class="v">Instagram oficial da Prefeitura</span></div>
+      <div class="sim-row"><span class="k">Conteúdo</span><span class="v">Filme institucional</span></div>
+      <div class="sim-row"><span class="k">Status</span><span class="v hot">Em exibição — dia 12 de 30</span></div>
+      <div class="sim-row"><span class="k">Identificação</span><span class="sim-tag">Conteúdo institucional</span></div>
+      <div class="sim-row"><span class="k">Próxima realização</span><span class="v">Escola Municipal · em produção</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="plans">
+  <div class="plans-inner">
+    <div class="plans-head reveal">
+      <span class="eyebrow">Quanto custa</span>
+      <h2 class="disp" style="margin-top:10px;">Três formatos de contrato mensal.</h2>
+    </div>
+    <div class="plans-grid reveal">
+      <div class="plan">
+        <h3>Essencial</h3>
+        <div class="price">R$7.900</div>
+        <div class="per">por mês</div>
+        <ul>
+          <li>1 filme/mês</li>
+          <li>Exibição na TV Sul Capixaba</li>
+          <li>Instagram oficial da Prefeitura</li>
+        </ul>
+      </div>
+      <div class="plan">
+        <h3>Regional</h3>
+        <div class="price">R$12.900</div>
+        <div class="per">por mês</div>
+        <ul>
+          <li>1 filme/mês + programa semanal</li>
+          <li>Toda a Rede Sul Capixaba</li>
+          <li>Relatório mensal de presença</li>
+        </ul>
+      </div>
+      <div class="plan">
+        <h3>Premium</h3>
+        <div class="price">R$19.900</div>
+        <div class="per">por mês</div>
+        <ul>
+          <li>Múltiplas exibições semanais</li>
+          <li>Distribuição regional + mídia paga</li>
+          <li>Inteligência de conteúdo completa</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final" id="final">
+  <div class="final-inner reveal">
+    <h2 class="disp">NÃO PROMETEMOS VOTO.<br><span class="hot">CONSTRUÍMOS MEMÓRIA.</span></h2>
+    <a class="cta-btn" href="https://wa.me/5521979234333" target="_blank" rel="noopener">FALAR COM RAUL GRECCO</a>
+  </div>
+  <div class="foot-meta">
+    <span>TV Sul Capixaba · Macuca Produções</span>
+    <span>WhatsApp +55 21 97923-4333</span>
+  </div>
+</section>
+
+<script>
+  // ============================================================
+  // COLE AQUI O LINK DE EMBED DO SEU VÍDEO (Castr, YouTube, Vimeo).
+  // Exemplo YouTube: "https://www.youtube.com/embed/SEU_ID?autoplay=1&mute=1&loop=1&playlist=SEU_ID&controls=0"
+  // Deixe em branco ("") pra manter o fundo escuro sem vídeo.
+  // ============================================================
+  const HERO_EMBED_URL = "https://player.castr.com/vod/FRbPmuxfR1F6TuU8?autoplay=true&muted=true&loop=true&controls=false";
+  const STATEMENT_EMBED_URL = "https://player.castr.com/vod/sre6DRa8pT0F55W2?autoplay=true&muted=true&loop=true&controls=false";
+  const MECH_EMBED_URL = "https://player.castr.com/vod/ndiUuijcI6AWd2Ab?autoplay=true&muted=true&loop=true&controls=false";
+  const REAL_EMBED_URL = "https://player.castr.com/vod/utAVVmJlplAvU97l?autoplay=true&muted=true&loop=true&controls=false";
+  const DIREC_EMBED_URL = "https://player.castr.com/vod/X3XxT2UR9YEwtPEF?autoplay=true&muted=true&loop=true&controls=false";
+
+  function mountEmbed(containerId, url){
+    const el = document.getElementById(containerId);
+    if (!url || !el) return;
+    const iframe = document.createElement('iframe');
+    iframe.src = url;
+    iframe.setAttribute('allow', 'autoplay; fullscreen');
+    iframe.setAttribute('frameborder', '0');
+    el.appendChild(iframe);
+  }
+  mountEmbed('heroMedia', HERO_EMBED_URL);
+  mountEmbed('statementMedia', STATEMENT_EMBED_URL);
+  mountEmbed('mechMedia', MECH_EMBED_URL);
+  mountEmbed('realMedia', REAL_EMBED_URL);
+  mountEmbed('direcMedia', DIREC_EMBED_URL);
+
+  // Reveal on scroll
+  const items = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.15 });
+  items.forEach(i => obs.observe(i));
+</script>
+
+</body>
+</html>
