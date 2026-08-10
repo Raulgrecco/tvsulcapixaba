@@ -241,6 +241,9 @@
   .sim-row .k{color:var(--gray); letter-spacing:1px; font-size:11px; text-transform:uppercase;}
   .sim-row .v{font-weight:600;}
   .sim-row .v.hot{color:var(--orange);}
+  .v-list{display:flex; flex-direction:column; align-items:flex-end; gap:5px; text-align:right;}
+  .v-list .main{font-weight:600; color:var(--white); font-size:15px;}
+  .v-list .sub{font-weight:500; color:var(--gray); font-size:12.5px;}
   .sim-tag{
     display:inline-block; font-size:10px; letter-spacing:1.5px; text-transform:uppercase;
     padding:4px 10px; border:1px solid var(--gray-dim); border-radius:20px; color:var(--gray);
@@ -407,11 +410,22 @@
     </div>
     <div class="sim-card reveal">
       <div class="sim-row"><span class="k">Canal</span><span class="v">TV Sul Capixaba</span></div>
-      <div class="sim-row"><span class="k">Distribuição</span><span class="v">Instagram oficial da Prefeitura</span></div>
-      <div class="sim-row"><span class="k">Conteúdo</span><span class="v">Filme institucional</span></div>
-      <div class="sim-row"><span class="k">Status</span><span class="v hot">Em exibição — dia 12 de 30</span></div>
+      <div class="sim-row"><span class="k">Distribuição</span>
+        <div class="v-list">
+          <div class="main">Instagram oficial da Prefeitura</div>
+          <div class="sub">Instagram TV Sul Capixaba</div>
+          <div class="sub">TV Sul Capixaba — Canal 300 · Soul TV</div>
+          <div class="sub">LIVE — RAD TV</div>
+          <div class="sub">Demais plataformas FAST e streaming do país</div>
+        </div>
+      </div>
+      <div class="sim-row"><span class="k">Conteúdo</span>
+        <div class="v-list">
+          <div class="main">Filmes institucionais mensais</div>
+          <div class="sub">Direção Raul Grecco</div>
+        </div>
+      </div>
       <div class="sim-row"><span class="k">Identificação</span><span class="sim-tag">Conteúdo institucional</span></div>
-      <div class="sim-row"><span class="k">Próxima realização</span><span class="v">Escola Municipal · em produção</span></div>
     </div>
   </div>
 </section>
