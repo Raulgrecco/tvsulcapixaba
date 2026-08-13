@@ -169,15 +169,11 @@
   }
   .cid-tile{
     position:relative; aspect-ratio:16/10; border-radius:2px; overflow:hidden;
-    cursor:pointer; background:linear-gradient(155deg,var(--panel2),var(--panel) 70%);
+    cursor:pointer; background:linear-gradient(200deg, var(--tile-a,#1c1c1c) 0%, var(--panel) 70%);
+    transition:transform .4s cubic-bezier(.2,.8,.2,1);
   }
+  .cid-tile:hover{transform:translateY(-4px);}
   .cid-tile.feat{grid-column:1 / -1; aspect-ratio:21/9;}
-  .cid-tile .thumb-media{position:absolute; inset:0;}
-  .cid-tile .thumb-media iframe{
-    position:absolute; top:50%; left:50%; width:100%; height:100%;
-    min-width:100%; min-height:100%; transform:translate(-50%,-50%);
-    object-fit:cover; border:none; pointer-events:none;
-  }
   .cid-tile::after{
     content:''; position:absolute; inset:0; z-index:1;
     background:linear-gradient(0deg, rgba(0,0,0,.82) 0%, rgba(0,0,0,.15) 45%, rgba(0,0,0,.35) 100%);
@@ -202,21 +198,6 @@
   }
   .cid-tile-play svg{width:16px; height:16px; fill:var(--white); margin-left:2px;}
   .cid-tile:hover .cid-tile-play{transform:scale(1.12); background:var(--orange); border-color:var(--orange);}
-
-  /* ---------- MODAL DE ASSISTIR (real, com som) ---------- */
-  .watch-modal{
-    position:fixed; inset:0; z-index:100; background:rgba(6,6,6,.94);
-    display:none; align-items:center; justify-content:center; padding:5vw;
-  }
-  .watch-modal.open{display:flex;}
-  .watch-box{position:relative; width:100%; max-width:1100px; max-height:85vh; background:#000; overflow:hidden;}
-  .watch-box::before{content:''; display:block; padding-top:56.25%;}
-  .watch-box iframe{position:absolute; top:0; left:0; width:100%; height:100%; border:none;}
-  .watch-close{
-    position:absolute; top:-46px; right:0; font-size:13px; letter-spacing:1.5px;
-    color:var(--gray); cursor:pointer; text-transform:uppercase;
-  }
-  .watch-close:hover{color:var(--white);}
 
   /* ---------- REALIZAÇÕES GRID ---------- */
   .real{padding:120px 40px 60px; position:relative;}
@@ -418,13 +399,45 @@
   .reel-arrow.prev{left:8px;} .reel-arrow.next{right:8px;}
   .reel-arrow:hover{background:#f0651b; border-color:#f0651b;}
 
-  #reel-watch-modal{position:fixed; inset:0; z-index:9999; background:rgba(6,6,6,.94); display:none; align-items:center; justify-content:center; padding:5vw;}
-  #reel-watch-modal.open{display:flex;}
-  .reel-watch-box{position:relative; width:100%; max-width:1100px; max-height:85vh; background:#000; overflow:hidden;}
-  .reel-watch-box::before{content:''; display:block; padding-top:56.25%;}
-  .reel-watch-box iframe{position:absolute; top:0; left:0; width:100%; height:100%; border:none;}
-  .reel-watch-close{position:absolute; top:-40px; right:0; font-size:12px; letter-spacing:1.5px; color:#8a8a8a; cursor:pointer; text-transform:uppercase; font-family:'Inter',sans-serif;}
-  .reel-watch-close:hover{color:#fff;}
+  #reel-watch-modal{display:none;}
+
+  /* ---------- MODAL DE DETALHES (Filmes / Palco Brasil) ---------- */
+  #media-detail{
+    position:fixed; inset:0; z-index:10000; background:rgba(6,6,6,.92);
+    display:none; align-items:center; justify-content:center; padding:20px;
+  }
+  #media-detail.open{display:flex;}
+  .md-box{
+    position:relative; background:#141414; max-width:920px; width:100%; max-height:88vh; overflow-y:auto;
+    border-radius:2px; display:grid; grid-template-columns:1fr 1.3fr; border:1px solid #2a2a2a;
+  }
+  .md-close{position:absolute; top:14px; right:16px; background:none; border:none; color:#fff; font-size:24px; cursor:pointer; z-index:2; font-family:'Inter',sans-serif; line-height:1;}
+  .md-poster{background-size:cover; background-position:center; min-height:320px;}
+  .md-info{padding:30px;}
+  .md-tag{display:inline-block; background:#f0651b; color:#0a0a0a; font-size:11px; font-weight:700; padding:4px 10px; border-radius:2px; margin-right:8px; letter-spacing:.5px; text-transform:uppercase; font-family:'Inter',sans-serif;}
+  .md-class{display:inline-block; background:#2a2a2a; color:#c9c9c9; font-size:11px; padding:4px 10px; border-radius:2px; font-family:'Inter',sans-serif;}
+  .md-title{color:#fff; font-family:'Archivo Black',sans-serif; text-transform:uppercase; font-size:26px; line-height:1.05; margin:16px 0 12px;}
+  .md-sinopse{color:#c9c9c9; font-size:14px; line-height:1.65; margin-bottom:18px; font-family:'Inter',sans-serif;}
+  .md-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:13px; color:#fff; margin-bottom:10px; font-family:'Inter',sans-serif;}
+  .md-grid span.lbl, .md-elenco span.lbl{color:#8a8a8a; font-size:11px; text-transform:uppercase; display:block; letter-spacing:.5px;}
+  .md-elenco{font-size:13px; color:#fff; margin-bottom:8px; font-family:'Inter',sans-serif;}
+  .md-imdb{color:#f0651b; font-size:13px; font-weight:700; margin-bottom:20px; font-family:'Inter',sans-serif;}
+  .md-play{background:#f0651b; color:#0a0a0a; border:none; padding:14px 28px; border-radius:2px; font-weight:700; font-size:14px; cursor:pointer; font-family:'Inter',sans-serif; text-transform:uppercase; letter-spacing:.5px;}
+  @media (max-width:640px){ .md-box{grid-template-columns:1fr; max-height:92vh;} .md-poster{min-height:200px;} }
+
+  /* ---------- TELA CHEIA (Filmes / Palco Brasil / Cidades) ---------- */
+  #media-watch{
+    position:fixed; inset:0; z-index:10000; background:#0a0a0a; display:none; flex-direction:column;
+  }
+  #media-watch.open{display:flex;}
+  .mw-bar{display:flex; align-items:center; gap:18px; padding:16px 20px; background:#141414; border-bottom:1px solid #2a2a2a;}
+  .mw-back{background:#f0651b; color:#0a0a0a; border:none; padding:11px 20px; border-radius:2px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:8px; white-space:nowrap; font-family:'Inter',sans-serif; text-transform:uppercase; letter-spacing:.5px;}
+  .mw-breadcrumb{font-size:11px; color:#f0651b; font-weight:700; letter-spacing:1px; text-transform:uppercase; font-family:'Inter',sans-serif;}
+  .mw-title{font-size:17px; font-weight:700; color:#fff; font-family:'Inter',sans-serif;}
+  .mw-body{flex:1; display:flex; align-items:center; justify-content:center; background:#000; position:relative;}
+  .mw-body iframe{width:100%; height:100%; border:none;}
+  .mw-foot{display:flex; justify-content:space-between; align-items:center; padding:8px 20px; background:#141414; border-top:1px solid #2a2a2a; font-size:11px; color:#5c5c5c; font-family:'Inter',sans-serif;}
+  @media (max-width:640px){ .mw-bar{padding:12px 14px; gap:12px;} .mw-title{font-size:14px;} .mw-back{padding:9px 14px; font-size:12px;} }
 
   @media (max-width:760px){
     .live-hero{height:100vh; min-height:560px;}
@@ -491,11 +504,33 @@
   </div>
 </section>
 
-<div id="reel-watch-modal">
-  <div class="reel-watch-box">
-    <span class="reel-watch-close" id="reelWatchClose">FECHAR ✕</span>
-    <div id="reelWatchPlayer"></div>
+<div id="media-detail">
+  <div class="md-box">
+    <button class="md-close" onclick="closeMediaDetail()">✕</button>
+    <div id="md-poster" class="md-poster"></div>
+    <div class="md-info">
+      <span id="md-tag" class="md-tag"></span>
+      <span id="md-class" class="md-class"></span>
+      <h2 id="md-title" class="md-title"></h2>
+      <p id="md-sinopse" class="md-sinopse"></p>
+      <div id="md-grid" class="md-grid"></div>
+      <div id="md-elenco" class="md-elenco"></div>
+      <div id="md-imdb" class="md-imdb"></div>
+      <button id="md-assistir" class="md-play">▶ ASSISTIR AGORA</button>
+    </div>
   </div>
+</div>
+
+<div id="media-watch">
+  <div class="mw-bar">
+    <button class="mw-back" onclick="closeMediaWatch()">← VOLTAR</button>
+    <div>
+      <div id="mw-breadcrumb" class="mw-breadcrumb"></div>
+      <div id="mw-title" class="mw-title"></div>
+    </div>
+  </div>
+  <div class="mw-body"><div id="mw-player" style="width:100%;height:100%;"></div></div>
+  <div class="mw-foot"><span>PLAYER INCORPORADO</span><span id="mw-source">CONTEÚDO ESPELHADO DE: YOUTUBE</span></div>
 </div>
 
 
@@ -548,45 +583,33 @@
     <p>Cinco realizações reais, em três cidades do Sul do ES. Clique e assista.</p>
   </div>
   <div class="cid-grid">
-    <div class="cid-tile feat reveal" data-embed="https://player.castr.com/vod/IHWHSodDf8zvw942" data-thumb="https://player.castr.com/vod/IHWHSodDf8zvw942?autoplay=true&amp;muted=true&amp;mute=1&amp;volume=0&amp;loop=true&amp;controls=false">
-      <div class="thumb-media"></div>
+    <div class="cid-tile feat reveal" style="--tile-a:#3a1c08;" data-embed="https://player.castr.com/vod/IHWHSodDf8zvw942">
       <span class="cid-tile-tag">Filme institucional</span>
       <span class="cid-tile-city disp">MARATAÍZES</span>
       <span class="cid-tile-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
     </div>
-    <div class="cid-tile reveal" data-embed="https://player.castr.com/vod/ZdAsGeOWY4SHJcem">
-      <div class="thumb-media"></div>
+    <div class="cid-tile reveal" style="--tile-a:#0f2f3a;" data-embed="https://player.castr.com/vod/ZdAsGeOWY4SHJcem">
       <span class="cid-tile-tag">Realização</span>
       <span class="cid-tile-city disp">PIÚMA</span>
       <span class="cid-tile-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
     </div>
-    <div class="cid-tile reveal" data-embed="https://player.castr.com/vod/SIhPkeXGfIf3CrMb">
-      <div class="thumb-media"></div>
+    <div class="cid-tile reveal" style="--tile-a:#241a35;" data-embed="https://player.castr.com/vod/SIhPkeXGfIf3CrMb">
       <span class="cid-tile-tag">Manifesto · Trabalhadores</span>
       <span class="cid-tile-city disp">MARATAÍZES</span>
       <span class="cid-tile-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
     </div>
-    <div class="cid-tile reveal" data-embed="https://player.castr.com/vod/utAVVmJlplAvU97l">
-      <div class="thumb-media"></div>
+    <div class="cid-tile reveal" style="--tile-a:#0f2f2a;" data-embed="https://player.castr.com/vod/utAVVmJlplAvU97l">
       <span class="cid-tile-tag">Ação Social · Doação</span>
       <span class="cid-tile-city disp">ITAPEMIRIM</span>
       <span class="cid-tile-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
     </div>
-    <div class="cid-tile reveal" data-embed="https://player.castr.com/vod/sre6DRa8pT0F55W2">
-      <div class="thumb-media"></div>
+    <div class="cid-tile reveal" style="--tile-a:#3a260a;" data-embed="https://player.castr.com/vod/sre6DRa8pT0F55W2">
       <span class="cid-tile-tag">Comércio · Shopping Céu Aberto</span>
       <span class="cid-tile-city disp">MARATAÍZES</span>
       <span class="cid-tile-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
     </div>
   </div>
 </section>
-
-<div class="watch-modal" id="watchModal">
-  <div class="watch-box">
-    <span class="watch-close" id="watchClose">FECHAR ✕</span>
-    <div id="watchPlayer"></div>
-  </div>
-</div>
 
 <section class="real">
   <div class="real-head reveal">
@@ -763,37 +786,19 @@
   // mountEmbed('direcMedia', DIREC_EMBED_URL, 60);
 
   // ============================================================
-  // SEÇÃO CIDADES — thumb de fundo mudo (mesmo padrão acima) +
-  // clique abre modal com o vídeo de verdade, com som, pausável.
+  // SEÇÃO CIDADES — sem prévia em vídeo (só texto/gradiente).
+  // Clique abre o mesmo player de tela cheia com "VOLTAR" usado
+  // pelos Filmes/Palco Brasil, identificado pela cidade + tag.
   // ============================================================
   document.querySelectorAll('.cid-tile').forEach(tile => {
     const embedUrl = tile.getAttribute('data-embed');
-    // Prévia em vídeo mudo DESLIGADA de propósito (mesmo risco de áudio
-    // dos vídeos de fundo). O tile fica só com o gradiente escuro + nome
-    // da cidade; o vídeo de verdade, com som, só toca no clique.
-    tile.addEventListener('click', () => openWatch(embedUrl));
+    const cityName = (tile.querySelector('.cid-tile-city') || {}).textContent || '';
+    const tagName = (tile.querySelector('.cid-tile-tag') || {}).textContent || '';
+    tile.addEventListener('click', () => {
+      if (!embedUrl) return;
+      openMediaWatch(embedUrl + '?autoplay=true&controls=true', cityName, 'REALIZAÇÃO · ' + tagName, 'CASTR');
+    });
   });
-
-  const watchModal = document.getElementById('watchModal');
-  const watchPlayer = document.getElementById('watchPlayer');
-
-  function openWatch(embedUrl){
-    if (!embedUrl) return;
-    stopOtherPlayers('cid');
-    watchPlayer.innerHTML = '';
-    const iframe = document.createElement('iframe');
-    iframe.src = embedUrl + '?autoplay=true&controls=true';
-    iframe.setAttribute('allow', 'autoplay; fullscreen');
-    iframe.setAttribute('frameborder', '0');
-    watchPlayer.appendChild(iframe);
-    watchModal.classList.add('open');
-  }
-  function closeWatch(){
-    watchModal.classList.remove('open');
-    watchPlayer.innerHTML = ''; // remove o iframe pra parar o som/vídeo de verdade
-  }
-  document.getElementById('watchClose').addEventListener('click', closeWatch);
-  watchModal.addEventListener('click', (e) => { if (e.target === watchModal) closeWatch(); });
 
   // Reveal on scroll
   const items = document.querySelectorAll('.reveal');
@@ -1042,15 +1047,8 @@ function stopOtherPlayers(except){
     var lh = document.getElementById('liveHero');
     if (lf && lf.querySelector('iframe')){ lf.innerHTML = ''; if (lh) lh.classList.remove('playing'); }
   }
-  if (except !== 'cid'){
-    var wm = document.getElementById('watchModal');
-    var wp = document.getElementById('watchPlayer');
-    if (wm && wm.classList.contains('open')){ wm.classList.remove('open'); if (wp) wp.innerHTML = ''; }
-  }
-  if (except !== 'reel'){
-    var rm = document.getElementById('reel-watch-modal');
-    var rp = document.getElementById('reelWatchPlayer');
-    if (rm && rm.classList.contains('open')){ rm.classList.remove('open'); if (rp) rp.innerHTML = ''; }
+  if (except !== 'watch'){
+    closeMediaWatch();
   }
 }
 
@@ -1069,26 +1067,81 @@ function loadLiveHero(){
 }
 document.getElementById('liveHero').addEventListener('click', loadLiveHero);
 
-// ---------- MODAL COMPARTILHADO DOS REELS ----------
-var reelModal = document.getElementById('reel-watch-modal');
-var reelPlayer = document.getElementById('reelWatchPlayer');
-function reelOpenWatch(youtubeId){
-  if (!youtubeId) return;
-  stopOtherPlayers('reel');
-  reelPlayer.innerHTML = '';
+// ---------- TELA CHEIA COMPARTILHADA (Filmes / Palco Brasil / Cidades) ----------
+var mediaWatch = document.getElementById('media-watch');
+var mediaWatchPlayer = document.getElementById('mw-player');
+function openMediaWatch(src, title, breadcrumb, sourceLabel){
+  if (!src) return;
+  stopOtherPlayers('watch');
+  closeMediaDetail();
+  mediaWatchPlayer.innerHTML = '';
   var iframe = document.createElement('iframe');
-  iframe.src = 'https://www.youtube.com/embed/' + youtubeId + '?autoplay=1';
-  iframe.setAttribute('allow','autoplay; fullscreen');
-  iframe.setAttribute('frameborder','0');
-  reelPlayer.appendChild(iframe);
-  reelModal.classList.add('open');
+  iframe.src = src;
+  iframe.setAttribute('allow', 'autoplay; fullscreen');
+  iframe.setAttribute('frameborder', '0');
+  iframe.setAttribute('allowfullscreen', '');
+  mediaWatchPlayer.appendChild(iframe);
+  document.getElementById('mw-title').textContent = title || '';
+  document.getElementById('mw-breadcrumb').textContent = breadcrumb || '';
+  document.getElementById('mw-source').textContent = 'CONTEÚDO ESPELHADO DE: ' + (sourceLabel || 'YOUTUBE');
+  mediaWatch.classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
-function reelCloseWatch(){
-  reelModal.classList.remove('open');
-  reelPlayer.innerHTML = '';
+function closeMediaWatch(){
+  if (mediaWatch.classList.contains('open')){
+    mediaWatch.classList.remove('open');
+    mediaWatchPlayer.innerHTML = '';
+    document.body.style.overflow = '';
+  }
 }
-document.getElementById('reelWatchClose').addEventListener('click', reelCloseWatch);
-reelModal.addEventListener('click', function(e){ if (e.target === reelModal) reelCloseWatch(); });
+
+// ---------- MODAL DE DETALHES (sinopse antes de assistir) ----------
+var mediaDetail = document.getElementById('media-detail');
+function openMediaDetail(kind, key){
+  if (kind === 'filme'){
+    var f = filmes[key];
+    if (!f || !f.youtube) return;
+    document.getElementById('md-poster').style.backgroundImage = 'url(' + f.poster + ')';
+    document.getElementById('md-tag').textContent = f.selo || 'Filme';
+    document.getElementById('md-class').textContent = 'Classificação: ' + (f.classificacao || '—');
+    document.getElementById('md-title').textContent = f.titulo;
+    document.getElementById('md-sinopse').textContent = f.sinopse;
+    document.getElementById('md-grid').innerHTML =
+      '<div><span class="lbl">Gênero</span>' + f.genero + '</div>' +
+      '<div><span class="lbl">Diretor</span>' + f.diretor + '</div>' +
+      '<div><span class="lbl">Ano</span>' + f.ano + '</div>' +
+      '<div><span class="lbl">Duração</span>' + f.duracao + '</div>';
+    document.getElementById('md-elenco').innerHTML = '<span class="lbl">Elenco</span>' + f.elenco;
+    document.getElementById('md-imdb').textContent = '⭐ IMDb ' + f.imdb;
+    document.getElementById('md-assistir').onclick = function(){
+      openMediaWatch('https://www.youtube.com/embed/' + f.youtube + '?autoplay=1', f.titulo, 'FILME · ' + f.ano + ' · ' + f.duracao + ' · ' + f.selo, 'YOUTUBE');
+    };
+  } else {
+    var p = palcoBrasil[key];
+    if (!p || !p.youtube) return;
+    document.getElementById('md-poster').style.backgroundImage = 'url(https://img.youtube.com/vi/' + p.youtube + '/hqdefault.jpg)';
+    document.getElementById('md-tag').textContent = 'Palco Brasil';
+    document.getElementById('md-class').textContent = '';
+    document.getElementById('md-title').textContent = p.artista;
+    document.getElementById('md-sinopse').textContent = p.descricao;
+    document.getElementById('md-grid').innerHTML = '';
+    document.getElementById('md-elenco').innerHTML = '';
+    document.getElementById('md-imdb').textContent = '⏱ Duração: ' + p.duracao;
+    document.getElementById('md-assistir').onclick = function(){
+      openMediaWatch('https://www.youtube.com/embed/' + p.youtube + '?autoplay=1', p.artista, 'PALCO BRASIL · ' + p.duracao, 'YOUTUBE');
+    };
+  }
+  mediaDetail.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeMediaDetail(){
+  if (mediaDetail.classList.contains('open')){
+    mediaDetail.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+mediaDetail.addEventListener('click', function(e){ if (e.target === mediaDetail) closeMediaDetail(); });
+mediaWatch.addEventListener('click', function(e){ if (e.target === mediaWatch) closeMediaWatch(); });
 
 // ---------- GRANDES FILMES ----------
 (function(){
@@ -1097,7 +1150,7 @@ reelModal.addEventListener('click', function(e){ if (e.target === reelModal) ree
   for (var key in filmes){
     var f = filmes[key];
     if (!f.youtube) continue;
-    html += '<div class="reel-card" onclick="reelOpenWatch(\'' + f.youtube + '\')">' +
+    html += '<div class="reel-card" onclick="openMediaDetail(\'filme\',\'' + key + '\')">' +
       '<img src="' + f.poster + '" alt="' + f.titulo + '">' +
       '<span class="reel-card-tag">' + (f.selo || 'Filme') + '</span>' +
       '<span class="reel-card-title">' + f.titulo + '</span>' +
@@ -1112,9 +1165,9 @@ reelModal.addEventListener('click', function(e){ if (e.target === reelModal) ree
 (function(){
   var row = document.getElementById('palcoRow');
   var html = '';
-  palcoBrasil.forEach(function(p){
+  palcoBrasil.forEach(function(p, i){
     if (!p.youtube) return;
-    html += '<div class="reel-card audio" onclick="reelOpenWatch(\'' + p.youtube + '\')">' +
+    html += '<div class="reel-card audio" onclick="openMediaDetail(\'palco\',' + i + ')">' +
       '<img src="https://img.youtube.com/vi/' + p.youtube + '/hqdefault.jpg" alt="' + p.artista + '">' +
       '<span class="reel-card-tag">Palco Brasil</span>' +
       '<span class="reel-card-title">' + p.artista + '</span>' +
