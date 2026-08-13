@@ -209,8 +209,9 @@
     display:none; align-items:center; justify-content:center; padding:5vw;
   }
   .watch-modal.open{display:flex;}
-  .watch-box{position:relative; width:100%; max-width:1100px; aspect-ratio:16/9; background:#000;}
-  .watch-box iframe{width:100%; height:100%; border:none;}
+  .watch-box{position:relative; width:100%; max-width:1100px; max-height:85vh; background:#000; overflow:hidden;}
+  .watch-box::before{content:''; display:block; padding-top:56.25%;}
+  .watch-box iframe{position:absolute; top:0; left:0; width:100%; height:100%; border:none;}
   .watch-close{
     position:absolute; top:-46px; right:0; font-size:13px; letter-spacing:1.5px;
     color:var(--gray); cursor:pointer; text-transform:uppercase;
@@ -419,8 +420,9 @@
 
   #reel-watch-modal{position:fixed; inset:0; z-index:9999; background:rgba(6,6,6,.94); display:none; align-items:center; justify-content:center; padding:5vw;}
   #reel-watch-modal.open{display:flex;}
-  .reel-watch-box{position:relative; width:100%; max-width:1100px; aspect-ratio:16/9; background:#000;}
-  .reel-watch-box iframe{width:100%; height:100%; border:none;}
+  .reel-watch-box{position:relative; width:100%; max-width:1100px; max-height:85vh; background:#000; overflow:hidden;}
+  .reel-watch-box::before{content:''; display:block; padding-top:56.25%;}
+  .reel-watch-box iframe{position:absolute; top:0; left:0; width:100%; height:100%; border:none;}
   .reel-watch-close{position:absolute; top:-40px; right:0; font-size:12px; letter-spacing:1.5px; color:#8a8a8a; cursor:pointer; text-transform:uppercase; font-family:'Inter',sans-serif;}
   .reel-watch-close:hover{color:#fff;}
 
@@ -750,11 +752,15 @@
     }, { threshold: 0.25 });
     lazyObs.observe(section);
   }
-  mountEmbed('heroMedia', HERO_EMBED_URL, 60);
-  mountEmbed('statementMedia', STATEMENT_EMBED_URL, 60);
-  mountEmbed('mechMedia', MECH_EMBED_URL, 60);
-  mountEmbed('realMedia', REAL_EMBED_URL, 60);
-  mountEmbed('direcMedia', DIREC_EMBED_URL, 60);
+  // Vídeos de fundo DESLIGADOS de propósito: nenhuma seção decorativa
+  // toca vídeo/áudio. Ficam só com o fundo escuro com textura (definido
+  // no CSS de cada seção). Se um dia quiser reativar com imagens fixas
+  // (sem risco de áudio), troque estas linhas por <img> estáticas.
+  // mountEmbed('heroMedia', HERO_EMBED_URL, 60);
+  // mountEmbed('statementMedia', STATEMENT_EMBED_URL, 60);
+  // mountEmbed('mechMedia', MECH_EMBED_URL, 60);
+  // mountEmbed('realMedia', REAL_EMBED_URL, 60);
+  // mountEmbed('direcMedia', DIREC_EMBED_URL, 60);
 
   // ============================================================
   // SEÇÃO CIDADES — thumb de fundo mudo (mesmo padrão acima) +
@@ -762,25 +768,9 @@
   // ============================================================
   document.querySelectorAll('.cid-tile').forEach(tile => {
     const embedUrl = tile.getAttribute('data-embed');
-    const thumbHolder = tile.querySelector('.thumb-media');
-    if (thumbHolder && embedUrl) {
-      const cidObs = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            if (!thumbHolder.querySelector('iframe')) {
-              const iframe = document.createElement('iframe');
-              iframe.src = embedUrl + '?autoplay=true&muted=true&mute=1&volume=0&loop=true&controls=false';
-              iframe.setAttribute('allow', 'autoplay');
-              iframe.setAttribute('frameborder', '0');
-              thumbHolder.appendChild(iframe);
-            }
-          } else {
-            thumbHolder.innerHTML = '';
-          }
-        });
-      }, { threshold: 0.2 });
-      cidObs.observe(tile);
-    }
+    // Prévia em vídeo mudo DESLIGADA de propósito (mesmo risco de áudio
+    // dos vídeos de fundo). O tile fica só com o gradiente escuro + nome
+    // da cidade; o vídeo de verdade, com som, só toca no clique.
     tile.addEventListener('click', () => openWatch(embedUrl));
   });
 
