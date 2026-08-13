@@ -466,6 +466,20 @@
     .reel-arrow{width:32px; height:32px; font-size:15px;}
   }
 
+  /* ---------- ALTERNÂNCIA DE FUNDO (branco / cinza / preto) ---------- */
+  .section-light{background:#f4f1ea; color:#161616;}
+  .section-light .disp{color:#161616;}
+  .section-light .eyebrow{color:#b8460c;}
+  .section-light .hot, .section-light .accent, .section-light .ac{color:#b8460c;}
+  .section-light p, .section-light .mech-sub, .section-light .mech-line.dim,
+  .section-light .hero-note, .section-light .real-head p{color:#5c5c5c;}
+  .section-light .real-tile{border-color:#ddd7c9;}
+  .section-light .scroll-cue{color:#5c5c5c;}
+  .section-light .scroll-cue .bar{background:#c9c2b0;}
+
+  .section-graytone{background:linear-gradient(160deg,#262626 0%,#383838 100%) !important;}
+  .section-graytone .mech-sub, .section-graytone .mech-line.dim{color:#b8b8b8;}
+
 </style>
 </head>
 <body>
@@ -555,7 +569,7 @@
      muted loop playsinline src="seu-video.mp4">.
      Sem nenhum link, fica o fundo escuro com textura (like agora).
      ============================================================ -->
-<section class="hero">
+<section class="hero section-light">
   <div class="hero-media" id="heroMedia"></div>
   <div class="hero-inner">
     <div class="hero-eyebrow eyebrow reveal">PROGRAMA DE PRESENÇA MUNICIPAL</div>
@@ -573,7 +587,7 @@
   </div>
 </section>
 
-<section class="mech">
+<section class="mech section-graytone">
   <div class="mech-media" id="mechMedia"></div>
   <div class="mech-inner">
     <div class="mech-line dim disp reveal">VOCÊ ESCOLHE</div>
@@ -623,7 +637,7 @@
   </div>
 </section>
 
-<section class="real">
+<section class="real section-light">
   <div class="real-head reveal">
     <span class="eyebrow">Realizações</span>
     <h2 class="disp" style="margin-top:10px;">Toda realização da sua cidade pode virar um filme.</h2>
