@@ -356,14 +356,32 @@
   .live-hero-title h1{font-size:clamp(30px,7.6vw,104px); color:#fff;}
   .live-hero-title h1 .ac{color:#f0651b;}
   .live-hero-sub{margin-top:16px; font-size:14px; color:#c8c8c8; font-family:'Inter',sans-serif; line-height:1.5;}
+  .live-hero-frame-box{
+    margin-top:32px; width:100%; max-width:560px; aspect-ratio:16/9;
+    border:1.5px solid rgba(255,255,255,.22); border-radius:6px;
+    background:rgba(255,255,255,.03);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+    transition:border-color .3s ease, background .3s ease;
+  }
+  .live-hero:hover .live-hero-frame-box{border-color:rgba(240,101,27,.55); background:rgba(240,101,27,.05);}
   .live-hero-play{
-    margin-top:36px;
     width:76px; height:76px; border-radius:50%; border:1.5px solid rgba(255,255,255,.6);
     display:flex; align-items:center; justify-content:center; transition:transform .3s ease, background .3s ease, border-color .3s ease;
-    background:rgba(0,0,0,.3); flex-shrink:0;
+    background:rgba(0,0,0,.3); flex-shrink:0; position:relative;
   }
-  .live-hero-play svg{width:22px; height:22px; fill:#fff; margin-left:3px;}
+  .live-hero-play::before{
+    content:''; position:absolute; inset:-10px; border-radius:50%;
+    border:1.5px solid rgba(240,101,27,.55);
+    animation:livePulse 1.8s ease-out infinite;
+  }
+  @keyframes livePulse{
+    0%{transform:scale(.85); opacity:.9;}
+    100%{transform:scale(1.35); opacity:0;}
+  }
+  .live-hero-play svg{width:22px; height:22px; fill:#fff; margin-left:3px; position:relative; z-index:1;}
   .live-hero:hover .live-hero-play{transform:scale(1.1); background:#f0651b; border-color:#f0651b;}
+  .live-hero-frame-cta{font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:#c8c8c8; font-family:'Inter',sans-serif;}
+  .live-hero.playing .live-hero-frame-box{display:none;}
   .live-hero-note{position:absolute; left:40px; bottom:32px; z-index:2; font-size:11px; color:#8a8a8a; letter-spacing:1px; text-transform:uppercase; font-family:'Inter',sans-serif; transition:opacity .35s ease;}
   .live-hero.playing .live-hero-note{opacity:.5;}
 
@@ -464,7 +482,10 @@
       <h1 class="disp">A PRIMEIRA REDE<br>100% <span class="ac">REGIONAL</span><br>DO SUL DO ES.</h1>
     </div>
     <p class="live-hero-sub">nascemos para conectar a região. um sinal total novo, regional, interativo e ao vivo.</p>
-    <div class="live-hero-play" id="liveHeroPlay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+    <div class="live-hero-frame-box" id="liveHeroPlay">
+      <div class="live-hero-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      <span class="live-hero-frame-cta">Clique para assistir ao vivo</span>
+    </div>
   </div>
   <div class="live-hero-note">disponível também na Soul TV — Canal 300 — e na Rad TV</div>
 </section>
@@ -693,7 +714,7 @@
 <section class="final" id="final">
   <div class="final-inner reveal">
     <h2 class="disp">CONSTRUÍMOS <span class="hot">MEMÓRIA.</span></h2>
-    <a class="cta-btn" href="https://wa.me/5521979234333" target="_blank" rel="noopener">FALAR COM RAUL GRECCO</a>
+    <a class="cta-btn" href="https://wa.me/5521979234333" target="_blank" rel="noopener">FALE COM A TV SUL CAPIXABA</a>
   </div>
   <div class="foot-meta">
     <span>TV Sul Capixaba · Macuca Produções</span>
