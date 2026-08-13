@@ -323,11 +323,19 @@
     .direc-item:last-child{border-bottom:1px solid var(--line);}
     .nav{padding:20px 22px;}
     .hero-inner, .statement, .mech, .real, .direc, .sim, .final{padding-left:22px; padding-right:22px;}
+    /* No mobile, telas cheias de 100vh por seção ficam desproporcionais
+       pra pouco texto — reduz a altura mínima pra cortar o excesso de
+       rolagem vazia entre uma seção e outra. */
+    .hero{height:auto; min-height:64vh; padding-top:130px;}
+    .statement{min-height:52vh; padding:80px 22px;}
+    .mech{padding:90px 22px;}
+    .real{padding:80px 22px 40px;}
+    .direc{padding:100px 22px 70px;}
   }
 
   /* ---------- LIVE (ao vivo) ---------- */
   .live-hero{
-    position:relative; height:88vh; min-height:520px; width:100%;
+    position:relative; min-height:88vh; width:100%; padding:110px 0 60px;
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     overflow:hidden; background:linear-gradient(160deg, #111 0%, #0a0a0a 60%); cursor:pointer;
   }
@@ -449,7 +457,7 @@
   @media (max-width:640px){ .mw-bar{padding:12px 14px; gap:12px;} .mw-title{font-size:14px;} .mw-back{padding:9px 14px; font-size:12px;} }
 
   @media (max-width:760px){
-    .live-hero{height:100vh; min-height:560px;}
+    .live-hero{min-height:100vh; padding:100px 0 50px;}
     .live-hero-badge{top:22px; left:22px; font-size:11px; padding:6px 11px;}
     .live-hero-note{left:22px; right:22px; bottom:20px; font-size:10px; line-height:1.4;}
     .live-hero-cta{padding:24px 20px; max-width:100%;}
@@ -493,15 +501,15 @@
   <div class="live-hero-badge"><span class="dot"></span> AO VIVO</div>
   <div class="live-hero-cta reveal">
     <div class="live-hero-title">
-      <h1 class="disp">A PRIMEIRA REDE<br>100% <span class="ac">REGIONAL</span><br>DO SUL DO ES.</h1>
+      <h1 class="disp">A PRIMEIRA REDE STREAMING<br>100% <span class="ac">REGIONAL</span><br>DO SUL DO ES.</h1>
     </div>
-    <p class="live-hero-sub">nascemos para conectar a região. um sinal total novo, regional, interativo e ao vivo.</p>
+    <p class="live-hero-sub">nascemos para conectar a região. um sinal novo, regional, interativo e ao vivo — o mesmo modelo já forte na Europa e nos EUA, agora aqui no Sul do ES.</p>
     <div class="live-hero-frame-box" id="liveHeroPlay">
       <div class="live-hero-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
       <span class="live-hero-frame-cta">Clique para assistir ao vivo</span>
     </div>
   </div>
-  <div class="live-hero-note">disponível também na Soul TV — Canal 300 — e na Rad TV</div>
+  <div class="live-hero-note">disponível também na Soul TV — Canal 300 — e na Rad TV<br>pipeline e API próprios, integrados às redes sociais · novas parcerias em breve</div>
 </section>
 
 <section class="reel">
