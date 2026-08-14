@@ -1293,11 +1293,10 @@ document.querySelectorAll('.reel .reveal, .live-hero .reveal').forEach(function(
      - A página começa parada, esperando você apertar espaço — assim
        você começa a gravar a tela ANTES, e só dá o play quando quiser.
      - Pressione "R" a qualquer momento pra voltar direto ao topo.
-     - Ajuste a velocidade mudando SCROLL_SPEED abaixo (em pixels por
-       segundo). Hoje está em 55px/s — dá pra rolar a página inteira
-       em cerca de 40–60 segundos, dependendo do tamanho dela.
-     - Quer mais rápido ou mais devagar? É só esse número:
-         SCROLL_SPEED = 55   →  mais devagar: 30   |  mais rápido: 90
+     - A velocidade é calculada AUTOMATICAMENTE pra rolar a página
+       inteira em DURACAO_SEGUNDOS (hoje: 55s), não importa o tamanho
+       dela. Quer mudar o tempo total? É só esse número:
+         DURACAO_SEGUNDOS = 55   →  mais devagar: 80   |  mais rápido: 35
      ============================================================ -->
 <div id="scrollHint" style="
   position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
@@ -1309,7 +1308,7 @@ document.querySelectorAll('.reel .reveal, .live-hero .reveal').forEach(function(
 
 <script>
 (function(){
-  var SCROLL_SPEED = 55; // pixels por segundo — ajuste aqui
+  var DURACAO_SEGUNDOS = 55; // tempo total pra rolar a página inteira
   var rolando = false;
   var lastTime = null;
   var hint = document.getElementById('scrollHint');
@@ -1319,9 +1318,11 @@ document.querySelectorAll('.reel .reveal, .live-hero .reveal').forEach(function(
     if (lastTime === null) lastTime = timestamp;
     var dt = (timestamp - lastTime) / 1000;
     lastTime = timestamp;
-    window.scrollBy(0, SCROLL_SPEED * dt);
 
     var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    var speed = maxScroll / DURACAO_SEGUNDOS; // px/s, recalculado sempre (cobre imagens que ainda carregam)
+    window.scrollBy(0, speed * dt);
+
     if (window.scrollY >= maxScroll - 2) {
       rolando = false;
       hint.textContent = '✓ Fim da página · R pra voltar ao topo';
