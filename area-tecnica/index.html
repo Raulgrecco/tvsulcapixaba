@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Área técnica — Rede Sul Capixaba</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0a0a0a; --white:#ffffff; --orange:#f0651b;
+    --gray:#8a8a8a; --gray-dim:#5c5c5c; --line:#2a2a2a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:#111; color:#fff; font-family:'Inter',sans-serif;}
+  .disp{font-family:'Archivo Black',sans-serif; text-transform:uppercase;}
+
+  .tvadmin{padding:60px 24px 90px;}
+  .tvadmin-head{max-width:1200px; margin:0 auto 28px;}
+  .tvadmin-eyebrow{font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--gray-dim);}
+  .tvadmin-head h1{font-size:clamp(22px,3vw,32px); color:#c8c8c8; margin:10px 0 8px; font-weight:700;}
+  .tvadmin-head p{font-size:13px; color:var(--gray-dim); max-width:680px; line-height:1.6;}
+  .tvadmin-warn{
+    max-width:1200px; margin:0 auto 24px; padding:12px 16px; border:1px solid rgba(240,101,27,.35);
+    background:rgba(240,101,27,.06); border-radius:4px; font-size:12px; color:#e0a37a; line-height:1.6;
+  }
+  .tvadmin-wrap{max-width:1200px; margin:0 auto; overflow-x:auto;}
+  table.tvadmin-table{width:100%; border-collapse:collapse; font-size:12.5px; min-width:900px;}
+  table.tvadmin-table th{text-align:left; color:var(--gray); font-weight:700; text-transform:uppercase; letter-spacing:.5px; font-size:10.5px; padding:10px 12px; border-bottom:1px solid var(--line);}
+  table.tvadmin-table td{padding:12px; border-bottom:1px solid #1c1c1c; color:#c8c8c8; vertical-align:top;}
+  table.tvadmin-table tr:hover td{background:#161616;}
+  .tvadmin-badge{width:26px; height:26px; border-radius:50%; display:inline-flex; overflow:hidden;}
+  .tvadmin-badge img, .tvadmin-badge svg{width:100%; height:100%; object-fit:cover;}
+  .tvadmin-status{display:inline-block; font-size:10px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:3px 8px; border-radius:3px;}
+  .tvadmin-status.ativo{background:rgba(60,180,90,.15); color:#4fd67a;}
+  .tvadmin-status.pendente{background:rgba(240,101,27,.15); color:var(--orange);}
+  .tvadmin-link{color:var(--orange); text-decoration:underline; word-break:break-all;}
+  .tvadmin-note{font-size:11px; color:var(--gray-dim); margin-top:2px; display:block;}
+  .tvadmin-loading{max-width:1200px; margin:0 auto; color:var(--gray-dim); font-size:13px;}
+</style>
+</head>
+<body>
+
+<section class="tvadmin">
+  <div class="tvadmin-head">
+    <span class="tvadmin-eyebrow">Área técnica · uso interno · não indexada, sem link no site</span>
+    <h1 class="disp">Fontes de transmissão dos canais</h1>
+    <p>Cadastro centralizado das fontes oficiais de cada canal da Rede Sul Capixaba — lido ao vivo direto do <code>CHANNELS</code> do index.html, então esta página nunca fica desatualizada em relação ao site. Para editar um canal, mexa apenas no <code>index.html</code>.</p>
+  </div>
+  <div class="tvadmin-warn">
+    Esta página fica no ar publicamente se alguém souber/adivinhar o endereço — não há senha nem login. Está fora do menu, sem link em nenhuma outra página, e marcada <code>noindex</code> para não aparecer no Google. Se quiser proteção de verdade (usuário/senha), isso precisa ser configurado no hospedeiro (ex: HTTP Basic Auth), não dá pra fazer só com HTML/JS estático.
+  </div>
+  <div class="tvadmin-wrap">
+    <div class="tvadmin-loading" id="loading">Carregando cadastro do index.html…</div>
+    <table class="tvadmin-table" id="table" style="display:none;">
+      <thead>
+        <tr><th>Canal</th><th>Logo</th><th>Fonte oficial</th><th>Tipo</th><th>URL / Embed</th><th>Status</th></tr>
+      </thead>
+      <tbody id="tvadminBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<script>
+function channelBadge(ch){
+  if (ch.logoImage){
+    return '<img src="' + ch.logoImage + '" alt="' + ch.nome + '">';
+  }
+  return '<svg viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">' +
+    '<circle cx="26" cy="26" r="26" fill="' + (ch.logoColor || '#5c5c5c') + '"/>' +
+    '<text x="26" y="32" text-anchor="middle" font-family="Inter,sans-serif" font-weight="700" font-size="16" fill="#fff">' + (ch.logoInitials || '?') + '</text>' +
+    '</svg>';
+}
+
+function extractChannelsSource(html){
+  var marker = 'var CHANNELS = {';
+  var start = html.indexOf(marker);
+  if (start === -1) return null;
+  var openBrace = start + marker.length - 1; // index of the opening {
+  var depth = 0;
+  for (var i = openBrace; i < html.length; i++){
+    var c = html[i];
+    if (c === '{') depth++;
+    else if (c === '}'){
+      depth--;
+      if (depth === 0){
+        return html.slice(openBrace, i + 1);
+      }
+    }
+  }
+  return null;
+}
+
+function renderTable(CHANNELS){
+  var body = document.getElementById('tvadminBody');
+  var keys = Object.keys(CHANNELS).sort(function(a,b){ return CHANNELS[a].ordem - CHANNELS[b].ordem; });
+  var html = '';
+  keys.forEach(function(key){
+    var ch = CHANNELS[key];
+    var isPending = ch.status === 'PENDENTE';
+    var fonteCell = ch.fonteOficialUrl
+      ? '<a class="tvadmin-link" href="' + ch.fonteOficialUrl + '" target="_blank" rel="noopener">' + ch.fonteOficial + '</a>'
+      : ch.fonteOficial;
+    var urlCell = ch.urlEmbed ? ch.urlEmbed : '—';
+    html += '<tr>' +
+      '<td>' + ch.nome + '</td>' +
+      '<td><span class="tvadmin-badge">' + channelBadge(ch) + '</span></td>' +
+      '<td>' + fonteCell + '</td>' +
+      '<td>' + ch.tipoFonte + '</td>' +
+      '<td>' + urlCell + (ch.nota ? '<span class="tvadmin-note">' + ch.nota + '</span>' : '') + '</td>' +
+      '<td><span class="tvadmin-status ' + (isPending ? 'pendente' : 'ativo') + '">' + ch.status + '</span></td>' +
+      '</tr>';
+  });
+  body.innerHTML = html;
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('table').style.display = 'table';
+}
+
+fetch('./index.html')
+  .then(function(r){
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.text();
+  })
+  .then(function(html){
+    var src = extractChannelsSource(html);
+    if (!src) throw new Error('Não achei "var CHANNELS = {...}" no index.html');
+    var CHANNELS = new Function('return ' + src)();
+    renderTable(CHANNELS);
+  })
+  .catch(function(err){
+    document.getElementById('loading').textContent =
+      'Não consegui carregar o cadastro automaticamente (' + err.message + '). ' +
+      'Verifique se esta página está na mesma pasta que o index.html no servidor.';
+  });
+</script>
+
+</body>
+</html>
