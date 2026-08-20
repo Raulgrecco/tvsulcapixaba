@@ -407,7 +407,37 @@
   .live-hero.playing .live-hero-note{opacity:.5;}
 
   /* ---------- REDE SUL CAPIXABA (central de canais) ---------- */
-  .rede{background:#0a0a0a; padding:70px 0 90px; border-top:1px solid #1c1c1c;}
+  .rede{
+    position:relative; overflow:hidden;
+    background:radial-gradient(ellipse 80% 60% at 30% 0%, #1a1108 0%, #0a0a0a 55%), #0a0a0a;
+    padding:70px 0 90px; border-top:1px solid #1c1c1c;
+  }
+  /* faíscas animadas, só CSS, sem imagem */
+  .rede-sparks{position:absolute; inset:0; pointer-events:none; z-index:0;}
+  .rede-sparks span{
+    position:absolute; width:3px; height:3px; border-radius:50%;
+    background:#f0651b; box-shadow:0 0 6px 2px rgba(240,101,27,.65);
+    opacity:0; animation:redeSpark 6s ease-in infinite;
+  }
+  .rede-sparks span:nth-child(1){left:6%; bottom:8%; animation-delay:.2s; animation-duration:7s;}
+  .rede-sparks span:nth-child(2){left:14%; bottom:4%; animation-delay:1.8s; animation-duration:5.5s;}
+  .rede-sparks span:nth-child(3){left:23%; bottom:12%; animation-delay:3.4s; animation-duration:6.5s;}
+  .rede-sparks span:nth-child(4){left:35%; bottom:2%; animation-delay:.9s; animation-duration:8s;}
+  .rede-sparks span:nth-child(5){left:48%; bottom:9%; animation-delay:2.6s; animation-duration:6s;}
+  .rede-sparks span:nth-child(6){left:58%; bottom:5%; animation-delay:4.2s; animation-duration:7.5s;}
+  .rede-sparks span:nth-child(7){left:68%; bottom:14%; animation-delay:1.2s; animation-duration:5.8s;}
+  .rede-sparks span:nth-child(8){left:77%; bottom:3%; animation-delay:3.9s; animation-duration:6.8s;}
+  .rede-sparks span:nth-child(9){left:85%; bottom:10%; animation-delay:.5s; animation-duration:7.2s;}
+  .rede-sparks span:nth-child(10){left:91%; bottom:6%; animation-delay:2.1s; animation-duration:6.2s;}
+  .rede-sparks span:nth-child(11){left:40%; bottom:20%; animation-delay:5s; animation-duration:8.5s;}
+  .rede-sparks span:nth-child(12){left:80%; bottom:22%; animation-delay:3s; animation-duration:7.8s;}
+  @keyframes redeSpark{
+    0%{opacity:0; transform:translateY(0) scale(.6);}
+    10%{opacity:1;}
+    80%{opacity:.4;}
+    100%{opacity:0; transform:translateY(-260px) scale(1.3);}
+  }
+  .rede-head, .rede-group, .rede-footer{position:relative; z-index:1;}
   .rede-head{max-width:1200px; margin:0 auto 34px; padding:0 40px;}
   .rede-eyebrow{font-size:12px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:#f0651b; font-family:'Inter',sans-serif;}
   .rede-head h2{font-size:clamp(26px,4.2vw,48px); color:#fff; margin:12px 0 10px;}
@@ -415,23 +445,33 @@
   .rede-group{max-width:1200px; margin:0 auto; padding:0 40px 8px;}
   .rede-group-label{font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#5c5c5c; font-family:'Inter',sans-serif; margin:30px 0 14px;}
   .rede-group:first-of-type .rede-group-label{margin-top:0;}
-  .rede-cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px;}
+  .rede-cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:16px;}
   .rede-card{
-    position:relative; background:#141414; border:1.5px solid #2a2a2a; border-radius:6px;
-    padding:20px 14px 16px; display:flex; flex-direction:column; align-items:center; gap:10px;
-    cursor:pointer; transition:border-color .25s ease, background .25s ease, transform .2s ease;
+    position:relative; background:linear-gradient(160deg,#181818 0%,#0f0f0f 100%);
+    border:1.5px solid #2e2e2e; border-radius:10px;
+    padding:26px 18px 20px; display:flex; flex-direction:column; align-items:center; gap:12px;
+    cursor:pointer; transition:border-color .25s ease, background .25s ease, transform .2s ease, box-shadow .25s ease;
     font-family:'Inter',sans-serif; text-align:center;
   }
-  .rede-card:hover{border-color:rgba(240,101,27,.55); transform:translateY(-2px);}
-  .rede-card.active{border-color:#f0651b; background:#1c1408;}
+  .rede-card:hover{border-color:rgba(240,101,27,.65); transform:translateY(-3px); box-shadow:0 10px 24px rgba(0,0,0,.4);}
+  .rede-card.active{border-color:#f0651b; background:linear-gradient(160deg,#241708 0%,#140d04 100%); box-shadow:0 0 0 1px rgba(240,101,27,.35), 0 10px 24px rgba(240,101,27,.12);}
   .rede-card.pending{opacity:.5;}
-  .rede-badge{width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
-  .rede-badge svg{width:100%; height:100%;}
-  .rede-card-name{font-size:12px; font-weight:700; color:#e8e8e8; letter-spacing:.3px; line-height:1.25;}
-  .rede-card-tag{position:absolute; top:8px; right:8px; font-size:8px; font-weight:700; letter-spacing:1px; text-transform:uppercase; padding:2px 6px; border-radius:2px;}
+  .rede-badge{width:66px; height:66px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; background:#fff; padding:3px;}
+  .rede-badge svg, .rede-badge img{width:100%; height:100%; border-radius:50%; object-fit:cover;}
+  .rede-card-name{font-size:14px; font-weight:700; color:#f2f2f2; letter-spacing:.2px; line-height:1.25;}
+  .rede-card-tag{
+    position:absolute; top:-8px; right:-8px; font-size:10px; font-weight:800; letter-spacing:.5px;
+    text-transform:uppercase; padding:5px 10px; border-radius:20px; box-shadow:0 3px 8px rgba(0,0,0,.35);
+  }
   .rede-card-tag.live{background:#f0651b; color:#0a0a0a;}
   .rede-card-tag.wait{background:#2a2a2a; color:#8a8a8a;}
-  .rede-card-cta{font-size:10px; color:#5c5c5c; letter-spacing:.5px;}
+  .rede-card-cta{font-size:10px; font-weight:600; color:#8a8a8a; letter-spacing:.6px; text-transform:uppercase;}
+  .rede-footer{
+    max-width:1200px; margin:56px auto 0; padding:0 40px; text-align:center;
+    font-size:clamp(20px,3.4vw,32px); font-weight:800; color:#fff; letter-spacing:.5px; text-transform:uppercase;
+    font-family:'Inter',sans-serif;
+  }
+  .rede-footer .ac{color:#f0651b;}
 
   /* ---------- ÁREA TÉCNICA (tabela de fontes) ---------- */
   .tvadmin{background:#111; padding:70px 0 90px; border-top:1px solid #1c1c1c;}
@@ -582,10 +622,15 @@
 </section>
 
 <section class="rede" id="rede-sul-capixaba">
+  <div class="rede-sparks" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span>
+  </div>
   <div class="rede-head reveal">
     <span class="rede-eyebrow">Rede Sul Capixaba</span>
-    <h2 class="disp" style="text-transform:uppercase;">Escolha seu canal</h2>
-    <p>Uma rede de canais do Sul do Espírito Santo. Clique em um canal para assistir — o player acima muda na hora.</p>
+    <h2 class="disp" style="text-transform:uppercase;">Assista grátis na TV Sul Capixaba</h2>
+    <p>Acesse todos estes canais públicos e próprios sem custo. É só clicar e assistir!</p>
   </div>
   <div class="rede-group reveal">
     <div class="rede-group-label">Canais próprios</div>
@@ -595,6 +640,7 @@
     <div class="rede-group-label">Canais públicos / institucionais</div>
     <div class="rede-cards" id="redeCardsPublicos"></div>
   </div>
+  <div class="rede-footer reveal">TODOS OS CANAIS SÃO <span class="ac">GRATUITOS!</span></div>
 </section>
 
 <section class="reel">
@@ -1400,10 +1446,10 @@ function renderRede(){
     var isPending = ch.status === 'PENDENTE';
     var isActive = key === 'sul-capixaba';
     htmls[ch.tipo] += '<div class="rede-card' + (isActive ? ' active' : '') + (isPending ? ' pending' : '') + '" data-key="' + key + '" onclick="playChannel(\'' + key + '\')">' +
-      '<span class="rede-card-tag ' + (isPending ? 'wait' : 'live') + '">' + (isPending ? 'em breve' : 'ao vivo') + '</span>' +
+      '<span class="rede-card-tag ' + (isPending ? 'wait' : 'live') + '">' + (isPending ? 'em breve' : 'grátis!') + '</span>' +
       '<span class="rede-badge">' + channelBadgeSVG(ch) + '</span>' +
       '<span class="rede-card-name">' + ch.nome + '</span>' +
-      '<span class="rede-card-cta">' + (isPending ? 'aguardando fonte' : 'assistir') + '</span>' +
+      '<span class="rede-card-cta">' + (isPending ? 'aguardando fonte' : 'clique para assistir grátis') + '</span>' +
       '</div>';
   });
   groups.proprio.innerHTML = htmls.proprio;
