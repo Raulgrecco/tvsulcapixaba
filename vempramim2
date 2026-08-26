@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vem Pra Mim — Microssérie Vertical</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#0E1B22;
+    --night-2:#132832;
+    --sand:#EDE6D6;
+    --dusk:#E8734A;
+    --dusk-dim:#B85333;
+    --teal:#4C9A93;
+    --alert:#B0384A;
+    --line: rgba(237,230,214,0.14);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--night);
+    color:var(--sand);
+    font-family:'IBM Plex Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .mono{font-family:'IBM Plex Mono', monospace; letter-spacing:0.04em;}
+  h1,h2,h3{font-family:'Anton', sans-serif; font-weight:400; letter-spacing:0.01em; margin:0;}
+
+  /* ---------- background texture ---------- */
+  .grain{
+    position:fixed; inset:0; pointer-events:none; opacity:0.05; z-index:1;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .glow-strip{
+    position:fixed; top:0; left:0; right:0; height:2px; z-index:5;
+    background:linear-gradient(90deg, transparent, var(--dusk), transparent);
+    animation: sweep 6s linear infinite;
+  }
+  @keyframes sweep{ 0%{opacity:.15;} 50%{opacity:.6;} 100%{opacity:.15;} }
+
+  /* ---------- nav ---------- */
+  nav{
+    position:sticky; top:0; z-index:20;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px clamp(20px,5vw,64px);
+    background:rgba(14,27,34,0.86); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .wordmark{font-family:'Bebas Neue', sans-serif; font-size:1.5rem; letter-spacing:0.06em; color:var(--sand);}
+  .wordmark span{color:var(--dusk);}
+  .nav-cta{
+    font-family:'IBM Plex Mono', monospace; font-size:0.78rem; letter-spacing:0.05em;
+    color:var(--night); background:var(--dusk); padding:10px 18px; border-radius:2px;
+    text-decoration:none; text-transform:uppercase; transition:transform .15s ease, background .2s ease;
+  }
+  .nav-cta:hover{background:var(--sand); transform:translateY(-1px);}
+
+  section{padding:clamp(60px,10vw,110px) clamp(20px,6vw,80px); position:relative; z-index:2;}
+
+  /* ---------- hero ---------- */
+  .hero{
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:60px; align-items:center;
+    min-height:88vh; padding-top:clamp(40px,6vw,60px);
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace; font-size:0.75rem; text-transform:uppercase;
+    letter-spacing:0.18em; color:var(--dusk); margin-bottom:18px; display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:''; width:22px; height:1px; background:var(--dusk); display:inline-block;}
+  .hero h1{
+    font-size:clamp(3.2rem, 8vw, 6.4rem); line-height:0.92; color:var(--sand);
+    text-shadow: 0 0 40px rgba(232,115,74,0.15);
+  }
+  .hero h1 em{font-style:normal; color:var(--dusk);}
+  .hero-sub{
+    max-width:520px; font-size:1.05rem; line-height:1.6; color:rgba(237,230,214,0.72); margin-top:26px;
+  }
+  .chip-row{display:flex; flex-wrap:wrap; gap:10px; margin-top:34px;}
+  .chip{
+    font-family:'IBM Plex Mono', monospace; font-size:0.72rem; letter-spacing:0.03em;
+    border:1px solid var(--line); padding:8px 14px; border-radius:100px; color:rgba(237,230,214,0.85);
+  }
+  .chip b{color:var(--dusk); font-weight:600;}
+
+  .hero-actions{display:flex; gap:14px; margin-top:38px; flex-wrap:wrap;}
+  .btn-primary{
+    font-family:'IBM Plex Mono', monospace; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em;
+    background:var(--dusk); color:var(--night); padding:15px 26px; border-radius:2px; text-decoration:none;
+    transition:transform .15s ease, box-shadow .2s ease;
+  }
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(232,115,74,0.25);}
+  .btn-ghost{
+    font-family:'IBM Plex Mono', monospace; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em;
+    border:1px solid var(--line); color:var(--sand); padding:15px 26px; border-radius:2px; text-decoration:none;
+    transition:border-color .2s ease;
+  }
+  .btn-ghost:hover{border-color:var(--dusk);}
+
+  /* ---------- phone stack (signature element) ---------- */
+  .phone-wrap{position:relative; display:flex; justify-content:center;}
+  .phone{
+    width:min(260px, 70vw); aspect-ratio:9/17.5; border-radius:26px; position:relative;
+    background:linear-gradient(160deg, var(--night-2), #0A151B 70%);
+    border:1px solid rgba(237,230,214,0.18); box-shadow:0 40px 90px rgba(0,0,0,0.55);
+    overflow:hidden;
+  }
+  .phone::after{ /* notch */
+    content:''; position:absolute; top:10px; left:50%; transform:translateX(-50%);
+    width:70px; height:6px; background:rgba(0,0,0,0.5); border-radius:6px;
+  }
+  .story-bars{position:absolute; top:20px; left:14px; right:14px; display:flex; gap:5px; z-index:4;}
+  .story-bars i{flex:1; height:3px; background:rgba(237,230,214,0.25); border-radius:2px; overflow:hidden; display:block;}
+  .story-bars i::before{content:''; display:block; height:100%; width:0%; background:var(--dusk); animation:fillbar 6s ease-in-out infinite;}
+  .story-bars i:nth-child(1)::before{animation-delay:0s;}
+  .story-bars i:nth-child(2)::before{animation-delay:2s;}
+  .story-bars i:nth-child(3)::before{animation-delay:4s;}
+  @keyframes fillbar{ 0%{width:0%;} 33%{width:100%;} 100%{width:100%;} }
+
+  .phone-slide{
+    position:absolute; inset:0; display:flex; align-items:flex-end; padding:26px 18px;
+    opacity:0; animation:cycle 6s ease-in-out infinite;
+  }
+  .phone-slide:nth-child(4){background:radial-gradient(circle at 30% 20%, #24424A, var(--night-2) 65%); animation-delay:0s;}
+  .phone-slide:nth-child(5){background:radial-gradient(circle at 70% 30%, #4A2A2E, var(--night-2) 65%); animation-delay:2s;}
+  .phone-slide:nth-child(6){background:radial-gradient(circle at 50% 15%, #3A3220, var(--night-2) 65%); animation-delay:4s;}
+  @keyframes cycle{
+    0%{opacity:0;} 4%{opacity:1;} 30%{opacity:1;} 36%{opacity:0;} 100%{opacity:0;}
+  }
+  .slide-ep{font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--dusk); text-transform:uppercase; letter-spacing:0.1em;}
+  .slide-title{font-family:'Anton',sans-serif; font-size:1.6rem; color:var(--sand); line-height:1; margin-top:8px;}
+  .phone-caption{
+    text-align:center; margin-top:18px; font-family:'IBM Plex Mono',monospace; font-size:0.7rem;
+    color:rgba(237,230,214,0.5); letter-spacing:0.04em;
+  }
+
+  /* ---------- section headers ---------- */
+  .sec-head{display:flex; align-items:baseline; gap:18px; margin-bottom:46px; flex-wrap:wrap;}
+  .sec-num{font-family:'IBM Plex Mono',monospace; color:var(--dusk); font-size:0.85rem;}
+  .sec-head h2{font-size:clamp(2rem,4.5vw,3rem); color:var(--sand);}
+  .sec-line{flex:1; height:1px; background:var(--line); min-width:40px;}
+
+  /* ---------- synopsis + cast ---------- */
+  .story-grid{display:grid; grid-template-columns:1fr 1fr; gap:50px;}
+  .logline{
+    font-size:1.3rem; line-height:1.55; color:var(--sand); border-left:2px solid var(--dusk); padding-left:24px;
+  }
+  .logline + p{margin-top:20px; color:rgba(237,230,214,0.65); line-height:1.7; font-size:0.98rem;}
+  .cast-list{display:flex; flex-direction:column; gap:0;}
+  .cast-item{
+    display:flex; justify-content:space-between; align-items:center; padding:18px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .cast-item:first-child{padding-top:0;}
+  .cast-name{font-family:'Anton',sans-serif; font-size:1.3rem; color:var(--sand);}
+  .cast-role{font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--dusk); text-transform:uppercase; letter-spacing:0.06em; text-align:right;}
+  .cast-actor{display:block; font-family:'IBM Plex Sans',sans-serif; font-size:0.82rem; color:rgba(237,230,214,0.5); margin-top:2px; text-transform:none; letter-spacing:0;}
+
+  /* ---------- distribution ---------- */
+  .dist-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line);}
+  .dist-card{background:var(--night); padding:32px 26px;}
+  .dist-card .mono{font-size:0.7rem; color:var(--dusk); text-transform:uppercase;}
+  .dist-card h3{font-size:1.5rem; margin-top:10px; color:var(--sand);}
+  .dist-card p{font-size:0.88rem; color:rgba(237,230,214,0.6); margin-top:10px; line-height:1.5;}
+
+  /* ---------- sponsors ---------- */
+  .master-card{
+    display:flex; justify-content:space-between; align-items:center; gap:24px; flex-wrap:wrap;
+    background:linear-gradient(120deg, rgba(232,115,74,0.14), rgba(232,115,74,0.02));
+    border:1px solid var(--dusk-dim); border-radius:4px; padding:34px 36px; margin-bottom:40px;
+  }
+  .master-card .mono{color:var(--dusk); font-size:0.72rem; text-transform:uppercase;}
+  .master-card h3{font-size:2rem; margin-top:6px; color:var(--sand);}
+  .master-tag{
+    font-family:'IBM Plex Mono',monospace; font-size:0.7rem; text-transform:uppercase; color:var(--night);
+    background:var(--dusk); padding:8px 16px; border-radius:100px;
+  }
+  .tiers{display:grid; grid-template-columns:repeat(auto-fit, minmax(230px,1fr)); gap:20px;}
+  .tier-card{
+    border:1px solid var(--line); padding:30px 26px; border-radius:4px; position:relative;
+    transition:border-color .2s ease, transform .2s ease;
+  }
+  .tier-card:hover{border-color:var(--dusk); transform:translateY(-4px);}
+  .tier-avail{font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--teal); text-transform:uppercase; letter-spacing:0.05em;}
+  .tier-price{font-family:'Anton',sans-serif; font-size:2.1rem; color:var(--sand); margin-top:14px;}
+  .tier-price sup{font-size:1rem; color:var(--dusk); font-family:'IBM Plex Mono',monospace;}
+  .tier-name{font-size:0.85rem; text-transform:uppercase; letter-spacing:0.06em; color:rgba(237,230,214,0.55); margin-top:6px;}
+  .tier-list{list-style:none; padding:0; margin:20px 0 0; font-size:0.85rem; color:rgba(237,230,214,0.7); line-height:1.9;}
+  .tier-list li::before{content:'— '; color:var(--dusk);}
+
+  /* ---------- ficha tecnica ---------- */
+  .ficha{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:0; border-top:1px solid var(--line);}
+  .ficha-item{padding:26px 6px; border-bottom:1px solid var(--line); border-right:1px solid var(--line);}
+  .ficha-item:last-child{border-right:none;}
+  .ficha-label{font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--dusk); text-transform:uppercase; letter-spacing:0.05em;}
+  .ficha-value{font-size:1.05rem; color:var(--sand); margin-top:8px; line-height:1.4;}
+
+  /* ---------- footer / cta ---------- */
+  .cta-final{
+    text-align:center; padding-top:20px;
+  }
+  .cta-final h2{font-size:clamp(2.2rem,6vw,4rem); max-width:820px; margin:0 auto;}
+  .cta-final .hero-sub{margin:24px auto 0; text-align:center;}
+  .cta-final .hero-actions{justify-content:center; margin-top:34px;}
+
+  footer{
+    border-top:1px solid var(--line); padding:34px clamp(20px,6vw,80px);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:14px;
+    font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:rgba(237,230,214,0.45);
+  }
+
+  @media (max-width: 860px){
+    .hero{grid-template-columns:1fr; text-align:left;}
+    .story-grid{grid-template-columns:1fr;}
+    .master-card{flex-direction:column; align-items:flex-start;}
+  }
+
+  a:focus-visible, button:focus-visible{outline:2px solid var(--dusk); outline-offset:3px;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="glow-strip"></div>
+
+<nav>
+  <div class="wordmark">VEM <span>PRA MIM</span></div>
+  <a href="#patrocine" class="nav-cta">Patrocinar</a>
+</nav>
+
+<section class="hero">
+  <div>
+    <div class="eyebrow">Microssérie vertical · TV Marataízes</div>
+    <h1>Uma história<br>daqui, pra<br><em>fora daqui.</em></h1>
+    <p class="hero-sub">Três episódios de ficção, gravados numa única diária no litoral sul do Espírito Santo, com elenco local. Feita pra tela vertical — pra ser vista antes de qualquer coisa no bolso de quem está na fila do mercado ou esperando o ônibus.</p>
+    <div class="chip-row">
+      <span class="chip"><b>3</b> episódios</span>
+      <span class="chip"><b>~90s</b> cada</span>
+      <span class="chip"><b>1</b> diária de gravação</span>
+      <span class="chip"><b>17/09</b> gravação</span>
+    </div>
+    <div class="hero-actions">
+      <a href="#patrocine" class="btn-primary">Ver cotas de apoio</a>
+      <a href="#historia" class="btn-ghost">Conhecer a história</a>
+    </div>
+  </div>
+
+  <div class="phone-wrap">
+    <div>
+      <div class="phone">
+        <div class="story-bars"><i></i><i></i><i></i></div>
+        <div class="phone-slide"><div><div class="slide-ep">EP. 01</div><div class="slide-title">A saída de Elaine</div></div></div>
+        <div class="phone-slide"><div><div class="slide-ep">EP. 02</div><div class="slide-title">O que o Cícero sabe</div></div></div>
+        <div class="phone-slide"><div><div class="slide-ep">EP. 03</div><div class="slide-title">A casa da Fernanda</div></div></div>
+      </div>
+      <div class="phone-caption">formato vertical · feito pra Reels, TikTok e Shorts</div>
+    </div>
+  </div>
+</section>
+
+<section id="historia">
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <h2>A história</h2>
+    <span class="sec-line"></span>
+  </div>
+  <div class="story-grid">
+    <div>
+      <p class="logline">Elaine quer sair de uma vida que não é mais dela. Só que sair, numa cidade pequena, nunca é só ir embora — é alguém perceber.</p>
+      <p>"Vem Pra Mim" acompanha, em três atos curtos, a tentativa de uma jovem de romper com o namorado, o silêncio de uma mãe que já viu essa história antes, e um delegado que sabe mais do que diz. Uma ficção de tensão e proximidade, ambientada no dia a dia real da região — a rua, o mercado, a casa simples — sem o verniz das produções de fora.</p>
+    </div>
+    <div class="cast-list">
+      <div class="cast-item">
+        <div>
+          <div class="cast-name">Elaine</div>
+        </div>
+        <div class="cast-role">Protagonista</div>
+      </div>
+      <div class="cast-item">
+        <div>
+          <div class="cast-name">Fernanda</div>
+        </div>
+        <div class="cast-role">Mãe de Elaine<span class="cast-actor">Interpretada por Elia</span></div>
+      </div>
+      <div class="cast-item">
+        <div>
+          <div class="cast-name">Eduardo</div>
+        </div>
+        <div class="cast-role">Namorado<span class="cast-actor">Interpretado por Valky</span></div>
+      </div>
+      <div class="cast-item">
+        <div>
+          <div class="cast-name">Cícero</div>
+        </div>
+        <div class="cast-role">Delegado</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <h2>Onde vai passar</h2>
+    <span class="sec-line"></span>
+  </div>
+  <div class="dist-grid">
+    <div class="dist-card">
+      <div class="mono">TV</div>
+      <h3>TV Marataízes</h3>
+      <p>Exibição na grade da emissora regional, alcançando quem já acompanha a programação local.</p>
+    </div>
+    <div class="dist-card">
+      <div class="mono">Reels</div>
+      <h3>Instagram</h3>
+      <p>Publicação nativa em formato vertical, feita pra consumo rápido e compartilhamento.</p>
+    </div>
+    <div class="dist-card">
+      <div class="mono">Vídeos curtos</div>
+      <h3>TikTok</h3>
+      <p>Distribuição pensada pra circular além da região, com potencial de alcance digital.</p>
+    </div>
+    <div class="dist-card">
+      <div class="mono">Shorts</div>
+      <h3>YouTube</h3>
+      <p>Presença permanente e indexada, reforçando a distribuição regional e digital do projeto.</p>
+    </div>
+  </div>
+</section>
+
+<section id="patrocine">
+  <div class="sec-head">
+    <span class="sec-num">03</span>
+    <h2>Patrocine</h2>
+    <span class="sec-line"></span>
+  </div>
+
+  <div class="master-card">
+    <div>
+      <div class="mono">Patrocinadora master</div>
+      <h3>Juliana Móveis</h3>
+    </div>
+    <span class="master-tag">Já é parceira</span>
+  </div>
+
+  <div class="tiers">
+    <div class="tier-card">
+      <div class="tier-avail">Nível 1</div>
+      <div class="tier-price">R$1.000<sup>—2.000</sup></div>
+      <div class="tier-name">Apoio</div>
+      <ul class="tier-list">
+        <li>Logo nos créditos da microssérie</li>
+        <li>Agradecimento nomeado</li>
+        <li>Associação à produção</li>
+      </ul>
+    </div>
+    <div class="tier-card">
+      <div class="tier-avail">Nível 2</div>
+      <div class="tier-price">R$3.000<sup>—5.000</sup></div>
+      <div class="tier-name">Parceiro</div>
+      <ul class="tier-list">
+        <li>Maior presença da marca</li>
+        <li>Participação na divulgação</li>
+        <li>Possibilidade de inserção narrativa/locação</li>
+      </ul>
+    </div>
+    <div class="tier-card">
+      <div class="tier-avail">Nível 3</div>
+      <div class="tier-price">R$7.500<sup>+</sup></div>
+      <div class="tier-name">Patrocinador Principal</div>
+      <ul class="tier-list">
+        <li>Marca associada à temporada inteira</li>
+        <li>Presença recorrente nos episódios</li>
+        <li>Entregas específicas combinadas com a produção</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <span class="sec-num">04</span>
+    <h2>Ficha técnica</h2>
+    <span class="sec-line"></span>
+  </div>
+  <div class="ficha">
+    <div class="ficha-item">
+      <div class="ficha-label">Produção</div>
+      <div class="ficha-value">TV Marataízes</div>
+    </div>
+    <div class="ficha-item">
+      <div class="ficha-label">Formato</div>
+      <div class="ficha-value">Vertical, 3 episódios</div>
+    </div>
+    <div class="ficha-item">
+      <div class="ficha-label">Duração</div>
+      <div class="ficha-value">~90 segundos por episódio</div>
+    </div>
+    <div class="ficha-item">
+      <div class="ficha-label">Gravação</div>
+      <div class="ficha-value">17 de setembro de 2026<br>diária única</div>
+    </div>
+    <div class="ficha-item">
+      <div class="ficha-label">Elenco</div>
+      <div class="ficha-value">Atores locais</div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-final">
+  <h2>Uma produção da região, sobre a região, pra circular fora da região.</h2>
+  <p class="hero-sub">Fale com a gente pra colocar sua marca dentro da primeira microssérie vertical do sul do Espírito Santo.</p>
+  <div class="hero-actions">
+    <a href="#patrocine" class="btn-primary">Quero patrocinar</a>
+  </div>
+</section>
+
+<footer>
+  <span>TV Marataízes · Macuca Produções</span>
+  <span>Vem Pra Mim — microssérie vertical</span>
+</footer>
+
+</body>
+</html>
