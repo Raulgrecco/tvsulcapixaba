@@ -463,10 +463,12 @@ a.contact-card:hover{background:#222;}
 .fp-barra{display:none}
 .fp-vaga{display:block}
 .fp-mini{position:fixed!important;z-index:450!important;right:16px;bottom:calc(16px + var(--fp-base,0px));left:auto!important;top:auto!important;
-  width:min(400px,calc(100vw - 32px))!important;max-width:none!important;margin:0!important;transform:none!important;
+  width:min(400px,calc(100vw - 32px))!important;max-width:none!important;margin:0!important;
+  /* camada própria: no Safari do iPhone, carrosséis com rolagem lateral às vezes eram pintados por cima de um fixed sem camada */
+  -webkit-transform:translate3d(0,0,0)!important;transform:translate3d(0,0,0)!important;will-change:transform;-webkit-backface-visibility:hidden;backface-visibility:hidden;
   border-radius:16px!important;padding:3px!important;box-shadow:0 24px 60px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.14)!important;
   animation:fp-in .28s ease both}
-@keyframes fp-in{from{opacity:0;transform:translateY(18px)}}
+@keyframes fp-in{from{opacity:0}}
 .fp-mini .fp-barra{display:flex;align-items:center;gap:6px;padding:4px 4px 4px 10px;min-height:44px;
   background:var(--fp-bar-bg);color:var(--fp-bar-tx);border-radius:13px 13px 0 0;font-family:var(--fp-font);
   font-weight:700;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;line-height:1}
@@ -500,6 +502,8 @@ a.contact-card:hover{background:#222;}
 /* enquanto flutua, os ancestrais posicionados sobem de camada (abaixo do menu fixo do portal)
    e perdem transform/filter, que prenderiam o position:fixed dentro deles */
 .fp-anc{z-index:var(--fp-z-anc,400)!important}
+.fp-anc-ov{overflow:visible!important;overflow-x:clip!important;overflow-y:visible!important}   /* Safari do iPhone recortava o player no fim da seção com overflow:hidden */
+.fp-decor{display:none!important}       /* enfeites da seção que poderiam vazar enquanto o recorte está desligado */
 .fp-anc-cb{transform:none!important;filter:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;perspective:none!important;contain:none!important;will-change:auto!important}
 @media (prefers-reduced-motion:reduce){.fp-mini{animation:none}.fp-barra .fp-vivo i{animation:none}}
 
@@ -1975,7 +1979,7 @@ var PROGRAMACAO = [
   }
   var marcados = [];
   function ancestrais(liga){
-    marcados.forEach(function(e){ e.classList.remove('fp-anc', 'fp-anc-cb'); });
+    marcados.forEach(function(e){ e.classList.remove('fp-anc', 'fp-anc-cb', 'fp-anc-ov', 'fp-decor'); });
     marcados = [];
     if (!liga) return;
     for (var e = jan.parentNode; e && e !== d.body && e.nodeType === 1; e = e.parentNode){
@@ -1983,6 +1987,14 @@ var PROGRAMACAO = [
       if (cs.position !== 'static') { e.classList.add('fp-anc'); m = true; }
       if (cs.transform !== 'none' || cs.filter !== 'none' || (cs.backdropFilter && cs.backdropFilter !== 'none') || cs.perspective !== 'none' ||
           (cs.contain && cs.contain !== 'none') || /transform|filter|perspective/.test(cs.willChange)) { e.classList.add('fp-anc-cb'); m = true; }
+      if (cs.overflowX !== 'visible' || cs.overflowY !== 'visible') {
+        e.classList.add('fp-anc-ov'); m = true;
+        [].forEach.call(e.querySelectorAll('[aria-hidden="true"]'), function(x){
+          if (x.contains(jan) || jan.contains(x)) return;
+          var p = getComputedStyle(x).position;
+          if (p === 'absolute' || p === 'fixed') { x.classList.add('fp-decor'); marcados.push(x); }
+        });
+      }
       if (m) marcados.push(e);
     }
   }
