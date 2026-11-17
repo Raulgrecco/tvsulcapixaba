@@ -456,6 +456,59 @@ a.contact-card:hover{background:#222;}
   .ticker-track{transform:none;}
 }
 </style>
+<style id="player-flutuante-css">:root{--fp-z-anc:89;--fp-font:var(--fb);--fp-bar-bg:#101010;--fp-bar-tx:#fff;--fp-vivo-bg:var(--red);--fp-bt-bg:transparent;--fp-bt-tx:var(--gray-l);--fp-bt-borda:var(--line2);--fp-bt-hover:var(--gold);--fp-bt-hover-tx:#0A0A0A;}
+
+/* ═══ PLAYER FLUTUANTE (mesmo padrão da TV Itapemirim) ═══
+   Só reposiciona a moldura que já existe; o iframe da transmissão não é recriado. */
+.fp-barra{display:none}
+.fp-vaga{display:block}
+.fp-mini{position:fixed!important;z-index:450!important;right:16px;bottom:calc(16px + var(--fp-base,0px));left:auto!important;top:auto!important;
+  width:min(400px,calc(100vw - 32px))!important;max-width:none!important;margin:0!important;transform:none!important;
+  border-radius:16px!important;padding:3px!important;box-shadow:0 24px 60px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.14)!important;
+  animation:fp-in .28s ease both}
+@keyframes fp-in{from{opacity:0;transform:translateY(18px)}}
+.fp-mini .fp-barra{display:flex;align-items:center;gap:6px;padding:4px 4px 4px 10px;min-height:44px;
+  background:var(--fp-bar-bg);color:var(--fp-bar-tx);border-radius:13px 13px 0 0;font-family:var(--fp-font);
+  font-weight:700;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;line-height:1}
+.fp-barra .fp-n{flex:1;display:flex;align-items:center;gap:8px;min-width:0;white-space:nowrap}
+.fp-barra .fp-vivo{flex:none;display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border-radius:6px;background:var(--fp-vivo-bg);color:#fff;font-size:10.5px;letter-spacing:.1em}
+.fp-barra .fp-vivo i{width:7px;height:7px;border-radius:50%;background:#fff;animation:fp-pulsa 1.6s ease-in-out infinite}
+@keyframes fp-pulsa{50%{opacity:.35}}
+.fp-barra .fp-nome{overflow:hidden;text-overflow:ellipsis;line-height:1.35;padding:2px 0}
+.fp-barra button{flex:none;width:36px;height:36px;padding:0;border-radius:8px;border:1px solid var(--fp-bt-borda,transparent);background:var(--fp-bt-bg);color:var(--fp-bt-tx);
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.fp-barra button:hover,.fp-barra button:focus-visible{background:var(--fp-bt-hover);color:var(--fp-bt-hover-tx);border-color:var(--fp-bt-hover)}
+.fp-barra button:focus-visible{outline:2px solid var(--fp-bt-hover);outline-offset:2px}
+.fp-barra button svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.fp-barra button[hidden]{display:none}
+.fp-mini .fp-tela{border-radius:0 0 13px 13px!important;overflow:hidden!important}
+.fp-mini .fp-tela, .fp-mini .fp-tela *{max-width:none}
+.fp-mini .fp-tela > *{border-radius:0 0 12px 12px!important}
+.fp-mini .fp-esconder{display:none!important}
+/* minimizado: só a barra; o iframe continua no lugar (som segue tocando) */
+.fp-mini.fp-min{width:max-content!important;max-width:calc(100vw - 20px)!important}
+.fp-mini.fp-min .fp-barra{border-radius:13px}
+.fp-mini.fp-min .fp-tela{height:0!important;min-height:0!important;aspect-ratio:auto!important;padding:0!important;border:0!important;opacity:0}
+.fp-mini.fp-min .fp-barra .fp-nome{max-width:46vw}
+@media (max-width:640px){
+  .fp-mini{right:10px;bottom:calc(10px + var(--fp-base,0px));width:min(330px,calc(100vw - 20px))!important}
+  .fp-mini .fp-barra{gap:4px;padding:3px 3px 3px 7px;min-height:40px;font-size:10.5px;letter-spacing:.04em}
+  .fp-barra .fp-n{gap:6px}
+  .fp-barra .fp-vivo{padding:4px 6px;font-size:9.5px;letter-spacing:.06em;gap:4px}
+  .fp-barra button{width:32px;height:32px}
+}
+/* enquanto flutua, os ancestrais posicionados sobem de camada (abaixo do menu fixo do portal)
+   e perdem transform/filter, que prenderiam o position:fixed dentro deles */
+.fp-anc{z-index:var(--fp-z-anc,400)!important}
+.fp-anc-cb{transform:none!important;filter:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;perspective:none!important;contain:none!important;will-change:auto!important}
+@media (prefers-reduced-motion:reduce){.fp-mini{animation:none}.fp-barra .fp-vivo i{animation:none}}
+
+/* Sul Capixaba: filete vermelho→dourado da casa no topo; o WhatsApp sobe para cima do player */
+.fp-mini.player{background:#000;border:1px solid var(--line2)}
+.fp-mini.player::before{z-index:5}
+.fp-ligado .wa-float{bottom:calc(var(--fp-h,0px) + 32px);transition:bottom .25s ease}
+@media(max-width:640px){.fp-ligado .wa-float{bottom:calc(var(--fp-h,0px) + 20px)}}
+</style>
 </head>
 <body>
 
@@ -1871,5 +1924,126 @@ var PROGRAMACAO = [
 })();
 </script>
 
+<script id="player-flutuante-js">
+(function(){'use strict';
+  var CFG = {"moldura": ".hero-stage > .player", "tela": "#liveHero", "recarregar": "#live-hero-reload-btn", "recuoTopo": 80, "esconder": [".player-bar", ".live-hero-badge"], "observarTambem": [".live-hero-badge", "#live-hero-reload-btn"], "tocando": function(){ var l = document.getElementById('liveHero'); return !!(l && l.classList.contains('playing') && document.querySelector('#liveHeroFrame iframe')); }, "nome": function(){ var b = document.querySelector('.live-hero-badge'); var t = b ? b.textContent.replace(/\s+/g, ' ').trim() : ''; t = t.replace(/^AO VIVO\s*·?\s*/i, ''); return t || 'TV Sul Capixaba'; }, "fechar": function(){ if (typeof stopOtherPlayers === 'function') stopOtherPlayers('mini'); }};
+  var d = document, raiz = d.documentElement;
+  var jan = d.querySelector(CFG.moldura), slot = jan && jan.parentNode;
+  if (!jan || !('IntersectionObserver' in window)) return;
+  var tela = jan.querySelector(CFG.tela) || jan;
+  tela.classList.add('fp-tela');
+  (CFG.esconder || []).forEach(function(s){ var e = jan.querySelector(s); if (e) e.classList.add('fp-esconder'); });
+  var reduz = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ic = {
+    min: '<svg viewBox="0 0 24 24"><path d="M6 17h12"/></svg>',
+    exp: '<svg viewBox="0 0 24 24"><rect x="5" y="6" width="14" height="12" rx="2"/></svg>',
+    rec: '<svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>',
+    sob: '<svg viewBox="0 0 24 24"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>',
+    x:   '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>'
+  };
+  var barra = d.createElement('div');
+  barra.className = 'fp-barra';
+  barra.innerHTML = '<span class="fp-n"><span class="fp-vivo"><i aria-hidden="true"></i>Ao vivo</span><span class="fp-nome"></span></span>' +
+    '<button type="button" data-fp="min" aria-pressed="false" aria-label="Minimizar o player" title="Minimizar">' + ic.min + '</button>' +
+    '<button type="button" data-fp="rec" aria-label="Recarregar a transmissão" title="Recarregar transmissão" hidden>' + ic.rec + '</button>' +
+    '<button type="button" data-fp="sob" aria-label="Voltar ao player no topo da página" title="Voltar ao player">' + ic.sob + '</button>' +
+    '<button type="button" data-fp="x" aria-label="Fechar o player e parar a transmissão" title="Fechar e parar">' + ic.x + '</button>';
+  jan.insertBefore(barra, jan.firstChild);
+  var nome = barra.querySelector('.fp-nome'), bMin = barra.querySelector('[data-fp="min"]'), bRec = barra.querySelector('[data-fp="rec"]');
+  var vaga = null, fora = false, minimizado = false;
+
+  function tocando(){ return CFG.tocando(); }
+  function ligado(){ return jan.classList.contains('fp-mini'); }
+  function altura(){
+    if (ligado()) raiz.style.setProperty('--fp-h', Math.round(jan.getBoundingClientRect().height) + 'px');
+  }
+  function atualizaBarra(){
+    var n = CFG.nome(); if (nome.textContent !== n) nome.textContent = n;   /* só escreve se mudou: evita laço no observador */
+    var orig = d.querySelector(CFG.recarregar);
+    var esc = !(orig && orig.style.display && orig.style.display !== 'none');
+    if (bRec.hidden !== esc) bRec.hidden = esc;
+  }
+  function setMin(v){
+    minimizado = v;
+    jan.classList.toggle('fp-min', v);
+    raiz.classList.toggle('fp-minimizado', v && ligado());
+    bMin.innerHTML = v ? ic.exp : ic.min;
+    bMin.setAttribute('aria-pressed', v ? 'true' : 'false');
+    bMin.setAttribute('aria-label', v ? 'Expandir o player' : 'Minimizar o player');
+    bMin.title = v ? 'Expandir' : 'Minimizar';
+    altura();
+  }
+  var marcados = [];
+  function ancestrais(liga){
+    marcados.forEach(function(e){ e.classList.remove('fp-anc', 'fp-anc-cb'); });
+    marcados = [];
+    if (!liga) return;
+    for (var e = jan.parentNode; e && e !== d.body && e.nodeType === 1; e = e.parentNode){
+      var cs = getComputedStyle(e), m = false;
+      if (cs.position !== 'static') { e.classList.add('fp-anc'); m = true; }
+      if (cs.transform !== 'none' || cs.filter !== 'none' || (cs.backdropFilter && cs.backdropFilter !== 'none') || cs.perspective !== 'none' ||
+          (cs.contain && cs.contain !== 'none') || /transform|filter|perspective/.test(cs.willChange)) { e.classList.add('fp-anc-cb'); m = true; }
+      if (m) marcados.push(e);
+    }
+  }
+  function aplica(){
+    var liga = fora && tocando();
+    if (liga === ligado()) { if (liga) atualizaBarra(); return; }
+    if (liga){
+      vaga = d.createElement('div');
+      vaga.className = 'fp-vaga'; vaga.setAttribute('aria-hidden', 'true');
+      vaga.style.height = jan.offsetHeight + 'px';
+      slot.insertBefore(vaga, jan);
+      jan.classList.add('fp-mini');
+      atualizaBarra();
+    } else {
+      jan.classList.remove('fp-mini');
+      if (vaga && vaga.parentNode) vaga.parentNode.removeChild(vaga);
+      vaga = null;
+      if (minimizado) setMin(false);
+    }
+    ancestrais(liga);
+    raiz.classList.toggle('fp-ligado', liga);
+    raiz.classList.toggle('fp-minimizado', liga && minimizado);
+    altura();
+  }
+  /* observa o lugar original do player (a "vaga" ocupa o espaço enquanto ele flutua) */
+  var alvo = slot;
+  new IntersectionObserver(function(es){ fora = !es[0].isIntersecting; aplica(); }, { threshold: CFG.limiar || .15 }).observe(alvo);
+  /* começa/para de tocar → as funções originais mexem no DOM; só observamos */
+  new MutationObserver(function(){ aplica(); if (ligado()) atualizaBarra(); }).observe(jan, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] });
+  (CFG.observarTambem || []).forEach(function(s){ var e = d.querySelector(s); if (e) new MutationObserver(function(){ if (ligado()) atualizaBarra(); }).observe(e, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['style'] }); });
+  if ('ResizeObserver' in window) new ResizeObserver(altura).observe(jan);
+  window.addEventListener('resize', altura);
+
+  function voltar(){
+    var y = slot.getBoundingClientRect().top + window.pageYOffset - (CFG.recuoTopo || 80);
+    window.scrollTo({ top: Math.max(0, y), behavior: reduz ? 'auto' : 'smooth' });
+  }
+  barra.addEventListener('click', function(e){
+    e.stopPropagation();   // a moldura/telas originais têm onclick próprio
+    var b = e.target.closest('button'); if (!b) return;
+    var a = b.getAttribute('data-fp');
+    if (a === 'min') setMin(!minimizado);
+    else if (a === 'sob') { setMin(false); voltar(); }
+    else if (a === 'rec') { var o = d.querySelector(CFG.recarregar); if (o) { quieto = true; try { o.click(); } finally { quieto = false; } } }
+    else if (a === 'x') { setMin(false); CFG.fechar(); aplica(); }
+  });
+  barra.addEventListener('keydown', function(e){ e.stopPropagation(); });
+
+  /* links e rolagens que apontam para o player enquanto ele flutua levam ao lugar original dele */
+  var nativo = Element.prototype.scrollIntoView, quieto = false;   /* quieto: recarregar pela barra não rola a página */
+  [jan].concat([].slice.call(jan.querySelectorAll('[id]'))).forEach(function(el){
+    el.scrollIntoView = function(o){ if (quieto) return; if (ligado()) { setMin(false); voltar(); } else nativo.call(this, o); };
+  });
+  d.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a || !ligado()) return;
+    var id = a.getAttribute('href').slice(1); if (!id) return;
+    var t = d.getElementById(id);
+    if (t && (t === jan || jan.contains(t))) { e.preventDefault(); setMin(false); voltar(); }
+  }, true);
+})();
+</script>
 </body>
 </html>
